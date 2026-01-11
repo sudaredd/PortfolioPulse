@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: pulse-heartbeat-test
+  
+  profiles:
+    active: test
+  
+  data:
+    cassandra:
+      keyspace-name: test_keyspace
+      schema-action: create_if_not_exists
+  
+  # Disable all autoconfiguration except what we need
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.ai.autoconfigure.vertexai.gemini.VertexAiGeminiAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
+
+alphavantage:
+  api-key: demo
+  base-url: https://www.alphavantage.co/query
+
+heartbeat:
+  scheduler:
+    enabled: false
+
+logging:
+  level:
+    com.portfoliopulse: DEBUG
+    org.testcontainers: INFO
+    org.springframework.data.cassandra: DEBUG

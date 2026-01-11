@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: pulse-heartbeat
+  
+  data:
+    cassandra:
+      keyspace-name: portfoliopulse
+      contact-points: localhost
+      port: 9042
+      local-datacenter: datacenter1
+      schema-action: create_if_not_exists
+
+# AlphaVantage API configuration
+alphavantage:
+  api-key: ${ALPHAVANTAGE_API_KEY:demo}
+  base-url: https://www.alphavantage.co/query
+
+# Scheduler configuration
+heartbeat:
+  scheduler:
+    enabled: true
+    cron: "0 0 18 * * MON-FRI"  # Run at 6 PM on weekdays (after market close)
+
+logging:
+  level:
+    com.portfoliopulse.heartbeat: DEBUG

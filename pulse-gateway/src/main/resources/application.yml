@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: pulse-gateway
+  config:
+    import: optional:classpath:application-local.yml
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/portfoliopulse
+    username: pulse
+    password: pulse123
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  data:
+    cassandra:
+      contact-points: ${CASSANDRA_CONTACT_POINTS:localhost}
+      port: ${CASSANDRA_PORT:9042}
+      local-datacenter: ${CASSANDRA_LOCAL_DATACENTER:datacenter1}
+      keyspace-name: ${CASSANDRA_KEYSPACE:portfoliopulse}
+      schema-action: CREATE_IF_NOT_EXISTS
+  
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        chat:
+          options:
+            model: gemini-1.5-flash
+
+alphavantage:
+  api-key: ${ALPHAVANTAGE_API_KEY}
+  base-url: ${ALPHAVANTAGE_BASE_URL:https://www.alphavantage.co}
+
+logging:
+  level:
+    com.portfoliopulse: DEBUG
+    org.springframework.ai: DEBUG

@@ -1,0 +1,4204 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+pulse-common/
+  src/
+    main/
+      java/
+        com/
+          portfoliopulse/
+            common/
+              dto/
+                PortfolioSummary.java
+                PriceRequest.java
+              TransactionType.java
+  pom.xml
+pulse-gateway/
+  src/
+    main/
+      java/
+        com/
+          portfoliopulse/
+            gateway/
+              controller/
+                SummaryController.java
+                TradeController.java
+                TransactionResponse.java
+              PulseGatewayApplication.java
+      resources/
+        application.yml
+  pom.xml
+pulse-heartbeat/
+  src/
+    main/
+      java/
+        com/
+          portfoliopulse/
+            heartbeat/
+              config/
+                CassandraConfig.java
+                SchedulerConfig.java
+                WebClientConfig.java
+              controller/
+                BackfillController.java
+              dto/
+                DailyPriceDTO.java
+              entity/
+                DailyPrice.java
+              repository/
+                DailyPriceRepository.java
+              scheduler/
+                HeartbeatScheduler.java
+              service/
+                AlphaVantageService.java
+                PortfolioPulse.code-workspace
+              PulseHeartbeatApplication.java
+      resources/
+        application.yml
+    test/
+      java/
+        com/
+          portfoliopulse/
+            heartbeat/
+              config/
+                TestCassandraConfig.java
+              repository/
+                DailyPriceRepositoryTest.java
+              TestApplication.java
+      resources/
+        application.yml
+        cassandra-init.cql
+  API_KEY_SETUP.md
+  pom.xml
+pulse-intel/
+  src/
+    main/
+      java/
+        com/
+          portfoliopulse/
+            intel/
+              config/
+                AiConfig.java
+              controller/
+                AnalysisController.java
+              model/
+                AnalysisReport.java
+              service/
+                PortfolioAnalyst.java
+    test/
+      java/
+        com/
+          portfoliopulse/
+            intel/
+              service/
+                PortfolioAnalystTest.java
+              GoogleGenAiProbeTest.java
+  pom.xml
+pulse-ledger/
+  src/
+    main/
+      java/
+        com/
+          portfoliopulse/
+            ledger/
+              entity/
+                Portfolio.java
+                Transaction.java
+              repository/
+                PortfolioRepository.java
+                TransactionRepository.java
+              service/
+                PerformanceService.java
+                SectorTagger.java
+                TransactionService.java
+      resources/
+        application.yml
+    test/
+      java/
+        com/
+          portfoliopulse/
+            ledger/
+              service/
+                PerformanceServiceTest.java
+  pom.xml
+scripts/
+  backfill_client/
+    backfill.py
+    README.md
+    requirements.txt
+    test_tickers.txt
+    tickers.txt
+    yfinance_ingest.py
+.gitignore
+docker-compose.yml
+pom.xml
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="pulse-common/src/main/java/com/portfoliopulse/common/dto/PortfolioSummary.java">
+package com.portfoliopulse.common.dto;
+
+import java.math.BigDecimal;
+
+/**
+ * DTO for portfolio performance summary using Weighted Average Cost Basis.
+ * Using Java 21 record for immutability and built-in methods.
+ */
+public record PortfolioSummary(String ticker, BigDecimal totalQuantity, BigDecimal averageCostBasis,
+		BigDecimal totalCost, String sector) {
+	/**
+	 * Builder pattern for compatibility with existing code.
+	 */
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private String ticker;
+		private BigDecimal totalQuantity;
+		private BigDecimal averageCostBasis;
+		private BigDecimal totalCost;
+		private String sector;
+
+		public Builder ticker(String ticker) {
+			this.ticker = ticker;
+			return this;
+		}
+
+		public Builder totalQuantity(BigDecimal totalQuantity) {
+			this.totalQuantity = totalQuantity;
+			return this;
+		}
+
+		public Builder averageCostBasis(BigDecimal averageCostBasis) {
+			this.averageCostBasis = averageCostBasis;
+			return this;
+		}
+
+		public Builder totalCost(BigDecimal totalCost) {
+			this.totalCost = totalCost;
+			return this;
+		}
+
+		public Builder sector(String sector) {
+			this.sector = sector;
+			return this;
+		}
+
+		public PortfolioSummary build() {
+			return new PortfolioSummary(ticker, totalQuantity, averageCostBasis, totalCost, sector);
+		}
+	}
+
+	// Getter aliases for compatibility
+	public String getTicker() {
+		return ticker;
+	}
+
+	public BigDecimal getTotalQuantity() {
+		return totalQuantity;
+	}
+
+	public BigDecimal getAverageCostBasis() {
+		return averageCostBasis;
+	}
+
+	public BigDecimal getTotalCost() {
+		return totalCost;
+	}
+
+	public String getSector() {
+		return sector;
+	}
+}
+</file>
+
+<file path="pulse-common/src/main/java/com/portfoliopulse/common/dto/PriceRequest.java">
+package com.portfoliopulse.common.dto;
+
+import com.portfoliopulse.common.TransactionType;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * DTO for incoming trade requests. Using Java 21 record for immutability and
+ * built-in methods.
+ */
+public record PriceRequest(String ticker, TransactionType type, BigDecimal quantity, BigDecimal price,
+		LocalDateTime timestamp) {
+	/**
+	 * Builder pattern for compatibility with existing code.
+	 */
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private String ticker;
+		private TransactionType type;
+		private BigDecimal quantity;
+		private BigDecimal price;
+		private LocalDateTime timestamp;
+
+		public Builder ticker(String ticker) {
+			this.ticker = ticker;
+			return this;
+		}
+
+		public Builder type(TransactionType type) {
+			this.type = type;
+			return this;
+		}
+
+		public Builder quantity(BigDecimal quantity) {
+			this.quantity = quantity;
+			return this;
+		}
+
+		public Builder price(BigDecimal price) {
+			this.price = price;
+			return this;
+		}
+
+		public Builder timestamp(LocalDateTime timestamp) {
+			this.timestamp = timestamp;
+			return this;
+		}
+
+		public PriceRequest build() {
+			return new PriceRequest(ticker, type, quantity, price, timestamp);
+		}
+	}
+
+	// Getter aliases for compatibility
+	public String getTicker() {
+		return ticker;
+	}
+
+	public TransactionType getType() {
+		return type;
+	}
+
+	public BigDecimal getQuantity() {
+		return quantity;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public LocalDateTime getTimestamp() {
+		return timestamp;
+	}
+}
+</file>
+
+<file path="pulse-common/src/main/java/com/portfoliopulse/common/TransactionType.java">
+package com.portfoliopulse.common;
+
+/**
+ * Enum representing the type of financial transaction.
+ */
+public enum TransactionType {
+	BUY, SELL, DIVIDEND
+}
+</file>
+
+<file path="pulse-common/pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.portfoliopulse</groupId>
+        <artifactId>portfoliopulse-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>pulse-common</artifactId>
+    <name>Pulse Common</name>
+    <description>Shared DTOs and enums for cross-module communication</description>
+
+    <!-- No dependencies needed - using Java 21 records -->
+</project>
+</file>
+
+<file path="pulse-gateway/src/main/java/com/portfoliopulse/gateway/controller/SummaryController.java">
+package com.portfoliopulse.gateway.controller;
+
+import com.portfoliopulse.common.dto.PortfolioSummary;
+import com.portfoliopulse.ledger.service.PerformanceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for portfolio summary and performance calculations.
+ */
+@RestController
+@RequestMapping("/api/v1/summary")
+public class SummaryController {
+
+	private static final Logger log = LoggerFactory.getLogger(SummaryController.class);
+
+	private final PerformanceService performanceService;
+
+	public SummaryController(PerformanceService performanceService) {
+		this.performanceService = performanceService;
+	}
+
+	/**
+	 * Get the Weighted Average Cost Basis summary for a specific ticker.
+	 */
+	@GetMapping("/{ticker}")
+	public ResponseEntity<PortfolioSummary> getSummaryByTicker(@PathVariable String ticker) {
+		log.info("Fetching summary for ticker: {}", ticker);
+		PortfolioSummary summary = performanceService.calculateWeightedAverage(ticker);
+		return ResponseEntity.ok(summary);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<PortfolioSummary>> getAllSummaries() {
+		log.info("Fetching summaries for all positions");
+		List<PortfolioSummary> summaries = performanceService.calculateAllPositions();
+		return ResponseEntity.ok(summaries);
+	}
+}
+</file>
+
+<file path="pulse-gateway/src/main/java/com/portfoliopulse/gateway/controller/TradeController.java">
+package com.portfoliopulse.gateway.controller;
+
+import com.portfoliopulse.common.dto.PriceRequest;
+import com.portfoliopulse.ledger.entity.Transaction;
+import com.portfoliopulse.ledger.service.TransactionService;
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for managing trades.
+ */
+@RestController
+@RequestMapping("/api/v1/trades")
+public class TradeController {
+
+	private static final Logger log = LoggerFactory.getLogger(TradeController.class);
+
+	private final TransactionService transactionService;
+
+	public TradeController(TransactionService transactionService) {
+		this.transactionService = transactionService;
+	}
+
+	/**
+	 * Record a new trade with AI sector tagging.
+	 */
+	@PostMapping
+	public ResponseEntity<TransactionResponse> createTrade(@Valid @RequestBody PriceRequest request) {
+		log.info("Received trade request: {} {} @ {}", request.getType(), request.getTicker(), request.getPrice());
+
+		Transaction saved = transactionService.saveTrade(request);
+		TransactionResponse response = mapToResponse(saved);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<TransactionResponse>> getAllTrades() {
+		List<Transaction> transactions = transactionService.getAllTransactions();
+		List<TransactionResponse> responses = transactions.stream().map(this::mapToResponse).toList();
+		return ResponseEntity.ok(responses);
+	}
+
+	@GetMapping("/ticker/{ticker}")
+	public ResponseEntity<List<TransactionResponse>> getTradesByTicker(@PathVariable String ticker) {
+		List<Transaction> transactions = transactionService.getTransactionsByTicker(ticker);
+		List<TransactionResponse> responses = transactions.stream().map(this::mapToResponse).toList();
+		return ResponseEntity.ok(responses);
+	}
+
+	private TransactionResponse mapToResponse(Transaction tx) {
+		return TransactionResponse.builder().id(tx.getId()).ticker(tx.getTicker()).type(tx.getType())
+				.quantity(tx.getQuantity()).price(tx.getPrice()).timestamp(tx.getTimestamp()).sector(tx.getSector())
+				.build();
+	}
+}
+</file>
+
+<file path="pulse-gateway/src/main/java/com/portfoliopulse/gateway/controller/TransactionResponse.java">
+package com.portfoliopulse.gateway.controller;
+
+import com.portfoliopulse.common.TransactionType;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * Response DTO for transaction data.
+ */
+public record TransactionResponse(Long id, String ticker, TransactionType type, BigDecimal quantity, BigDecimal price,
+		LocalDateTime timestamp, String sector) {
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private Long id;
+		private String ticker;
+		private TransactionType type;
+		private BigDecimal quantity;
+		private BigDecimal price;
+		private LocalDateTime timestamp;
+		private String sector;
+
+		public Builder id(Long id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder ticker(String ticker) {
+			this.ticker = ticker;
+			return this;
+		}
+
+		public Builder type(TransactionType type) {
+			this.type = type;
+			return this;
+		}
+
+		public Builder quantity(BigDecimal quantity) {
+			this.quantity = quantity;
+			return this;
+		}
+
+		public Builder price(BigDecimal price) {
+			this.price = price;
+			return this;
+		}
+
+		public Builder timestamp(LocalDateTime timestamp) {
+			this.timestamp = timestamp;
+			return this;
+		}
+
+		public Builder sector(String sector) {
+			this.sector = sector;
+			return this;
+		}
+
+		public TransactionResponse build() {
+			return new TransactionResponse(id, ticker, type, quantity, price, timestamp, sector);
+		}
+	}
+}
+</file>
+
+<file path="pulse-gateway/src/main/java/com/portfoliopulse/gateway/PulseGatewayApplication.java">
+package com.portfoliopulse.gateway;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+
+/**
+ * Main Spring Boot application for PortfolioPulse. Configures component
+ * scanning across all modules.
+ */
+@SpringBootApplication
+@ComponentScan(basePackages = {
+		"com.portfoliopulse.gateway",
+		"com.portfoliopulse.ledger",
+		"com.portfoliopulse.heartbeat",
+		"com.portfoliopulse.intel"
+}, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
+		com.portfoliopulse.heartbeat.PulseHeartbeatApplication.class
+}))
+@EntityScan("com.portfoliopulse.ledger.entity")
+@EnableJpaRepositories("com.portfoliopulse.ledger.repository")
+public class PulseGatewayApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(PulseGatewayApplication.class, args);
+	}
+}
+</file>
+
+<file path="pulse-gateway/src/main/resources/application.yml">
+server:
+  port: 8080
+
+spring:
+  application:
+    name: pulse-gateway
+  config:
+    import: optional:classpath:application-local.yml
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/portfoliopulse
+    username: pulse
+    password: pulse123
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  data:
+    cassandra:
+      contact-points: ${CASSANDRA_CONTACT_POINTS:localhost}
+      port: ${CASSANDRA_PORT:9042}
+      local-datacenter: ${CASSANDRA_LOCAL_DATACENTER:datacenter1}
+      keyspace-name: ${CASSANDRA_KEYSPACE:portfoliopulse}
+      schema-action: CREATE_IF_NOT_EXISTS
+  
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        chat:
+          options:
+            model: gemini-1.5-flash
+
+alphavantage:
+  api-key: ${ALPHAVANTAGE_API_KEY}
+  base-url: ${ALPHAVANTAGE_BASE_URL:https://www.alphavantage.co}
+
+logging:
+  level:
+    com.portfoliopulse: DEBUG
+    org.springframework.ai: DEBUG
+</file>
+
+<file path="pulse-gateway/pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.portfoliopulse</groupId>
+        <artifactId>portfoliopulse-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>pulse-gateway</artifactId>
+    <name>Pulse Gateway</name>
+    <description>REST API gateway and main application entry point</description>
+
+    <dependencies>
+        <!-- Internal Modules -->
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-ledger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-heartbeat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-intel</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spring Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/config/CassandraConfig.java">
+package com.portfoliopulse.heartbeat.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
+import org.springframework.data.cassandra.config.SchemaAction;
+import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
+
+@Configuration
+@EnableCassandraRepositories(basePackages = "com.portfoliopulse.heartbeat.repository")
+public class CassandraConfig extends AbstractCassandraConfiguration {
+
+    @Value("${spring.data.cassandra.keyspace-name}")
+    private String keyspaceName;
+
+    @Value("${spring.data.cassandra.contact-points}")
+    private String contactPoints;
+
+    @Value("${spring.data.cassandra.port}")
+    private int port;
+
+    @Value("${spring.data.cassandra.local-datacenter}")
+    private String localDatacenter;
+
+    @Override
+    protected String getKeyspaceName() {
+        return keyspaceName;
+    }
+
+    @Override
+    protected String getContactPoints() {
+        return contactPoints;
+    }
+
+    @Override
+    protected int getPort() {
+        return port;
+    }
+
+    @Override
+    protected String getLocalDataCenter() {
+        return localDatacenter;
+    }
+
+    @Override
+    public SchemaAction getSchemaAction() {
+        return SchemaAction.CREATE_IF_NOT_EXISTS;
+    }
+
+    @Override
+    public String[] getEntityBasePackages() {
+        return new String[] { "com.portfoliopulse.heartbeat.entity" };
+    }
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/config/SchedulerConfig.java">
+package com.portfoliopulse.heartbeat.config;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+/**
+ * Configuration to enable scheduling for the heartbeat module.
+ */
+@Configuration
+@EnableScheduling
+@ConditionalOnProperty(name = "heartbeat.scheduler.enabled", havingValue = "true", matchIfMissing = true)
+public class SchedulerConfig {
+	// Enables @Scheduled annotations
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/config/WebClientConfig.java">
+package com.portfoliopulse.heartbeat.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
+
+/**
+ * WebClient configuration for HTTP API calls.
+ */
+@Configuration
+public class WebClientConfig {
+
+	@Bean
+	public WebClient.Builder webClientBuilder() {
+		return WebClient.builder().codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)); // 16MB
+																														// buffer
+																														// for
+																														// large
+																														// responses
+	}
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/controller/BackfillController.java">
+package com.portfoliopulse.heartbeat.controller;
+
+import com.portfoliopulse.heartbeat.entity.DailyPrice;
+import com.portfoliopulse.heartbeat.service.AlphaVantageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.portfoliopulse.heartbeat.dto.DailyPriceDTO;
+import java.util.List;
+
+/**
+ * REST controller for triggering historical data backfills.
+ * This controller directly uses AlphaVantageService for testing purposes.
+ */
+@RestController
+@RequestMapping("/api/v1/backfill")
+public class BackfillController {
+
+    private static final Logger log = LoggerFactory.getLogger(BackfillController.class);
+
+    private final AlphaVantageService alphaVantageService;
+
+    public BackfillController(AlphaVantageService alphaVantageService) {
+        this.alphaVantageService = alphaVantageService;
+    }
+
+    /**
+     * Trigger historical data backfill for a specific ticker (compact - last 100
+     * days).
+     *
+     * @param ticker the stock ticker symbol
+     * @return confirmation message with count of prices saved
+     */
+    @PostMapping("/{ticker}")
+    public ResponseEntity<String> backfillTicker(@PathVariable String ticker) {
+        log.info("Triggering backfill (compact) for ticker: {}", ticker);
+        List<DailyPrice> prices = alphaVantageService.fetchAndSaveDailyPrices(ticker);
+        return ResponseEntity.ok(
+                String.format("Backfill (compact) completed for ticker: %s. Saved %d prices.", ticker, prices.size()));
+    }
+
+    /**
+     * Trigger full historical data backfill (20+ years) for a specific ticker.
+     *
+     * @param ticker the stock ticker symbol
+     * @return confirmation message with count of prices saved
+     */
+    @PostMapping("/full/{ticker}")
+    public ResponseEntity<String> backfillTickerFull(@PathVariable String ticker) {
+        log.info("Triggering full historical backfill (20+ years) for ticker: {}", ticker);
+        List<DailyPrice> prices = alphaVantageService.fetchAndSaveFullHistoricalPrices(ticker);
+        return ResponseEntity
+                .ok(String.format("Full historical backfill (20+ years) completed for ticker: %s. Saved %d prices.",
+                        ticker, prices.size()));
+    }
+
+    /**
+     * Ingest historical prices for a ticker (e.g. from Python yfinance script).
+     */
+    @PostMapping("/ingest/{ticker}")
+    public ResponseEntity<String> ingestPrices(@PathVariable String ticker,
+            @RequestBody List<DailyPriceDTO> priceDtos) {
+        log.info("Ingesting {} prices for ticker: {}", priceDtos.size(), ticker);
+        List<DailyPrice> saved = alphaVantageService.saveExternalPrices(ticker, priceDtos);
+        return ResponseEntity.ok(String.format("Ingested %d prices for %s", saved.size(), ticker));
+    }
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/dto/DailyPriceDTO.java">
+package com.portfoliopulse.heartbeat.dto;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+public class DailyPriceDTO {
+    private LocalDate date;
+    private BigDecimal open;
+    private BigDecimal high;
+    private BigDecimal low;
+    private BigDecimal close;
+    private BigDecimal adjustedClose;
+    private Long volume;
+
+    // Getters and Setters
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public BigDecimal getOpen() {
+        return open;
+    }
+
+    public void setOpen(BigDecimal open) {
+        this.open = open;
+    }
+
+    public BigDecimal getHigh() {
+        return high;
+    }
+
+    public void setHigh(BigDecimal high) {
+        this.high = high;
+    }
+
+    public BigDecimal getLow() {
+        return low;
+    }
+
+    public void setLow(BigDecimal low) {
+        this.low = low;
+    }
+
+    public BigDecimal getClose() {
+        return close;
+    }
+
+    public void setClose(BigDecimal close) {
+        this.close = close;
+    }
+
+    public BigDecimal getAdjustedClose() {
+        return adjustedClose != null ? adjustedClose : close;
+    }
+
+    public void setAdjustedClose(BigDecimal adjustedClose) {
+        this.adjustedClose = adjustedClose;
+    }
+
+    public Long getVolume() {
+        return volume;
+    }
+
+    public void setVolume(Long volume) {
+        this.volume = volume;
+    }
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/entity/DailyPrice.java">
+package com.portfoliopulse.heartbeat.entity;
+
+import org.springframework.data.cassandra.core.cql.Ordering;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
+import org.springframework.data.cassandra.core.mapping.Table;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Objects;
+
+/**
+ * Cassandra entity for storing daily stock prices.
+ *
+ * Composite partition key: (ticker, price_year) for even data distribution.
+ * Clustering column: trade_date (descending) for time-series queries.
+ */
+@Table("daily_prices")
+public class DailyPrice {
+
+	@PrimaryKeyColumn(name = "ticker", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	private String ticker;
+
+	@PrimaryKeyColumn(name = "price_year", ordinal = 1, type = PrimaryKeyType.PARTITIONED)
+	private int priceYear;
+
+	@PrimaryKeyColumn(name = "trade_date", ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
+	private LocalDate tradeDate;
+
+	@Column("open_price")
+	private BigDecimal openPrice;
+
+	@Column("high_price")
+	private BigDecimal highPrice;
+
+	@Column("low_price")
+	private BigDecimal lowPrice;
+
+	@Column("close_price")
+	private BigDecimal closePrice;
+
+	@Column("adjusted_close")
+	private BigDecimal adjustedClose;
+
+	@Column("volume")
+	private Long volume;
+
+	@Column("dividend_amount")
+	private BigDecimal dividendAmount;
+
+	@Column("split_coefficient")
+	private BigDecimal splitCoefficient;
+
+	public DailyPrice() {
+	}
+
+	public DailyPrice(String ticker, int priceYear, LocalDate tradeDate, BigDecimal openPrice, BigDecimal highPrice,
+			BigDecimal lowPrice, BigDecimal closePrice, BigDecimal adjustedClose, Long volume,
+			BigDecimal dividendAmount, BigDecimal splitCoefficient) {
+		this.ticker = ticker;
+		this.priceYear = priceYear;
+		this.tradeDate = tradeDate;
+		this.openPrice = openPrice;
+		this.highPrice = highPrice;
+		this.lowPrice = lowPrice;
+		this.closePrice = closePrice;
+		this.adjustedClose = adjustedClose;
+		this.volume = volume;
+		this.dividendAmount = dividendAmount;
+		this.splitCoefficient = splitCoefficient;
+	}
+
+	// Getters and Setters
+	public String getTicker() {
+		return ticker;
+	}
+	public void setTicker(String ticker) {
+		this.ticker = ticker;
+	}
+
+	public int getPriceYear() {
+		return priceYear;
+	}
+	public void setPriceYear(int priceYear) {
+		this.priceYear = priceYear;
+	}
+
+	public LocalDate getTradeDate() {
+		return tradeDate;
+	}
+	public void setTradeDate(LocalDate tradeDate) {
+		this.tradeDate = tradeDate;
+	}
+
+	public BigDecimal getOpenPrice() {
+		return openPrice;
+	}
+	public void setOpenPrice(BigDecimal openPrice) {
+		this.openPrice = openPrice;
+	}
+
+	public BigDecimal getHighPrice() {
+		return highPrice;
+	}
+	public void setHighPrice(BigDecimal highPrice) {
+		this.highPrice = highPrice;
+	}
+
+	public BigDecimal getLowPrice() {
+		return lowPrice;
+	}
+	public void setLowPrice(BigDecimal lowPrice) {
+		this.lowPrice = lowPrice;
+	}
+
+	public BigDecimal getClosePrice() {
+		return closePrice;
+	}
+	public void setClosePrice(BigDecimal closePrice) {
+		this.closePrice = closePrice;
+	}
+
+	public BigDecimal getAdjustedClose() {
+		return adjustedClose;
+	}
+	public void setAdjustedClose(BigDecimal adjustedClose) {
+		this.adjustedClose = adjustedClose;
+	}
+
+	public Long getVolume() {
+		return volume;
+	}
+	public void setVolume(Long volume) {
+		this.volume = volume;
+	}
+
+	public BigDecimal getDividendAmount() {
+		return dividendAmount;
+	}
+	public void setDividendAmount(BigDecimal dividendAmount) {
+		this.dividendAmount = dividendAmount;
+	}
+
+	public BigDecimal getSplitCoefficient() {
+		return splitCoefficient;
+	}
+	public void setSplitCoefficient(BigDecimal splitCoefficient) {
+		this.splitCoefficient = splitCoefficient;
+	}
+
+	// Builder pattern
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private String ticker;
+		private int priceYear;
+		private LocalDate tradeDate;
+		private BigDecimal openPrice;
+		private BigDecimal highPrice;
+		private BigDecimal lowPrice;
+		private BigDecimal closePrice;
+		private BigDecimal adjustedClose;
+		private Long volume;
+		private BigDecimal dividendAmount;
+		private BigDecimal splitCoefficient;
+
+		public Builder ticker(String ticker) {
+			this.ticker = ticker;
+			return this;
+		}
+		public Builder priceYear(int priceYear) {
+			this.priceYear = priceYear;
+			return this;
+		}
+		public Builder tradeDate(LocalDate tradeDate) {
+			this.tradeDate = tradeDate;
+			return this;
+		}
+		public Builder openPrice(BigDecimal openPrice) {
+			this.openPrice = openPrice;
+			return this;
+		}
+		public Builder highPrice(BigDecimal highPrice) {
+			this.highPrice = highPrice;
+			return this;
+		}
+		public Builder lowPrice(BigDecimal lowPrice) {
+			this.lowPrice = lowPrice;
+			return this;
+		}
+		public Builder closePrice(BigDecimal closePrice) {
+			this.closePrice = closePrice;
+			return this;
+		}
+		public Builder adjustedClose(BigDecimal adjustedClose) {
+			this.adjustedClose = adjustedClose;
+			return this;
+		}
+		public Builder volume(Long volume) {
+			this.volume = volume;
+			return this;
+		}
+		public Builder dividendAmount(BigDecimal dividendAmount) {
+			this.dividendAmount = dividendAmount;
+			return this;
+		}
+		public Builder splitCoefficient(BigDecimal splitCoefficient) {
+			this.splitCoefficient = splitCoefficient;
+			return this;
+		}
+
+		public DailyPrice build() {
+			return new DailyPrice(ticker, priceYear, tradeDate, openPrice, highPrice, lowPrice, closePrice,
+					adjustedClose, volume, dividendAmount, splitCoefficient);
+		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		DailyPrice that = (DailyPrice) o;
+		return priceYear == that.priceYear && Objects.equals(ticker, that.ticker)
+				&& Objects.equals(tradeDate, that.tradeDate);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(ticker, priceYear, tradeDate);
+	}
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/repository/DailyPriceRepository.java">
+package com.portfoliopulse.heartbeat.repository;
+
+import com.portfoliopulse.heartbeat.entity.DailyPrice;
+import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.cassandra.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Cassandra repository for DailyPrice entities.
+ */
+@Repository
+public interface DailyPriceRepository extends CassandraRepository<DailyPrice, String> {
+
+	/**
+	 * Find all prices for a ticker in a specific year.
+	 */
+	List<DailyPrice> findByTickerAndPriceYear(String ticker, int priceYear);
+
+	/**
+	 * Find prices for a ticker within a year, ordered by trade date descending.
+	 */
+	@Query("SELECT * FROM daily_prices WHERE ticker = ?0 AND price_year = ?1 ORDER BY trade_date DESC LIMIT ?2")
+	List<DailyPrice> findRecentPrices(String ticker, int priceYear, int limit);
+
+	/**
+	 * Find a specific price for a ticker on a given date.
+	 */
+	Optional<DailyPrice> findByTickerAndPriceYearAndTradeDate(String ticker, int priceYear, LocalDate tradeDate);
+
+	/**
+	 * Count prices for a ticker in a year (for bucketing verification).
+	 */
+	long countByTickerAndPriceYear(String ticker, int priceYear);
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/scheduler/HeartbeatScheduler.java">
+package com.portfoliopulse.heartbeat.scheduler;
+
+import com.portfoliopulse.heartbeat.service.AlphaVantageService;
+import com.portfoliopulse.ledger.repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+/**
+ * Scheduler for daily market data ingestion. Fetches closing prices for all
+ * tickers in the ledger.
+ */
+@Component
+@ConditionalOnProperty(name = "heartbeat.scheduler.enabled", havingValue = "true", matchIfMissing = true)
+public class HeartbeatScheduler {
+
+	private static final Logger log = LoggerFactory.getLogger(HeartbeatScheduler.class);
+
+	private final AlphaVantageService alphaVantageService;
+	private final TransactionRepository transactionRepository;
+
+	public HeartbeatScheduler(AlphaVantageService alphaVantageService, TransactionRepository transactionRepository) {
+		this.alphaVantageService = alphaVantageService;
+		this.transactionRepository = transactionRepository;
+	}
+
+	/**
+	 * Scheduled task to fetch latest prices for all tickers in the portfolio. Runs
+	 * daily at 6 PM on weekdays (after market close) or as configured.
+	 */
+	@Scheduled(cron = "${heartbeat.scheduler.cron:0 0 18 * * MON-FRI}")
+	public void fetchDailyPrices() {
+		log.info("Starting daily price ingestion...");
+
+		// Get all distinct tickers from the ledger
+		List<String> tickers = transactionRepository.findDistinctTickers();
+
+		if (tickers.isEmpty()) {
+			log.info("No tickers found in ledger, skipping price fetch");
+			return;
+		}
+
+		log.info("Fetching prices for {} tickers: {}", tickers.size(), tickers);
+
+		int successCount = 0;
+		int failCount = 0;
+
+		for (String ticker : tickers) {
+			try {
+				// Use rate limiting - AlphaVantage free tier is 5 calls/minute
+				Thread.sleep(12000); // 12 seconds between calls (5 per minute)
+
+				alphaVantageService.fetchLatestPrice(ticker).subscribe(
+						price -> log.debug("Updated price for {}", ticker),
+						error -> log.error("Failed to update {}: {}", ticker, error.getMessage()));
+				successCount++;
+
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				log.error("Price fetch interrupted");
+				break;
+			} catch (Exception e) {
+				log.error("Error fetching price for {}: {}", ticker, e.getMessage());
+				failCount++;
+			}
+		}
+
+		log.info("Daily price ingestion completed. Success: {}, Failed: {}", successCount, failCount);
+	}
+
+	/**
+	 * Manual trigger for fetching historical prices (backfill) using compact output
+	 * (last 100 days).
+	 * Can be called via an endpoint or programmatically.
+	 */
+	public void backfillHistoricalPrices(String ticker) {
+		log.info("Backfilling historical prices (compact) for ticker: {}", ticker);
+		alphaVantageService.fetchAndSaveDailyPrices(ticker);
+	}
+
+	/**
+	 * Manual trigger for fetching full historical prices (20+ years) for initial
+	 * backfill.
+	 * Can be called via an endpoint or programmatically.
+	 */
+	public void backfillFullHistoricalPrices(String ticker) {
+		log.info("Backfilling full historical prices (20+ years) for ticker: {}", ticker);
+		alphaVantageService.fetchAndSaveFullHistoricalPrices(ticker);
+	}
+
+	/**
+	 * Backfill historical prices (compact - last 100 days) for all tickers in the
+	 * ledger.
+	 */
+	public void backfillAllTickers() {
+		List<String> tickers = transactionRepository.findDistinctTickers();
+		log.info("Backfilling historical prices (compact) for {} tickers", tickers.size());
+
+		for (String ticker : tickers) {
+			try {
+				// Rate limit - wait between API calls
+				Thread.sleep(12000);
+				backfillHistoricalPrices(ticker);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Backfill full historical prices (20+ years) for all tickers in the ledger.
+	 */
+	public void backfillAllTickersFull() {
+		List<String> tickers = transactionRepository.findDistinctTickers();
+		log.info("Backfilling full historical prices (20+ years) for {} tickers", tickers.size());
+
+		for (String ticker : tickers) {
+			try {
+				// Rate limit - wait between API calls
+				Thread.sleep(12000);
+				backfillFullHistoricalPrices(ticker);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				break;
+			}
+		}
+	}
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/service/AlphaVantageService.java">
+package com.portfoliopulse.heartbeat.service;
+
+import com.portfoliopulse.heartbeat.entity.DailyPrice;
+import com.portfoliopulse.heartbeat.repository.DailyPriceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import com.portfoliopulse.heartbeat.dto.DailyPriceDTO;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Service for fetching stock prices from AlphaVantage API.
+ */
+@Service
+public class AlphaVantageService {
+
+    private static final Logger log = LoggerFactory.getLogger(AlphaVantageService.class);
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private final WebClient webClient;
+    private final DailyPriceRepository dailyPriceRepository;
+    private final String apiKey;
+
+    public AlphaVantageService(WebClient.Builder webClientBuilder, DailyPriceRepository dailyPriceRepository,
+            @Value("${alphavantage.base-url}") String baseUrl, @Value("${alphavantage.api-key}") String apiKey) {
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+        this.dailyPriceRepository = dailyPriceRepository;
+        this.apiKey = apiKey;
+    }
+
+    /**
+     * Fetch daily adjusted prices for a ticker from AlphaVantage API. Maps the JSON
+     * response to DailyPrice Cassandra entities and saves them.
+     *
+     * @param ticker
+     *               the stock ticker symbol
+     * @return list of saved DailyPrice entities
+     */
+    @SuppressWarnings("unchecked")
+    public List<DailyPrice> fetchAndSaveDailyPrices(String ticker) {
+        log.info("Fetching daily adjusted prices for ticker: {}", ticker);
+
+        try {
+            Map<String, Object> response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder.queryParam("function", "TIME_SERIES_DAILY")
+                            .queryParam("symbol", ticker).queryParam("apikey", apiKey)
+                            .queryParam("outputsize", "compact").build())
+                    .retrieve().bodyToMono(Map.class).block();
+
+            if (response == null) {
+                log.warn("Empty response from AlphaVantage for ticker: {}", ticker);
+                return Collections.emptyList();
+            }
+
+            // Check for API error
+            if (response.containsKey("Error Message")) {
+                log.error("AlphaVantage API error for {}: {}", ticker, response.get("Error Message"));
+                return Collections.emptyList();
+            }
+
+            // Check for rate limit
+            if (response.containsKey("Note")) {
+                log.warn("AlphaVantage rate limit reached: {}", response.get("Note"));
+                return Collections.emptyList();
+            }
+
+            return mapAndSavePrices(ticker, response);
+
+        } catch (Exception e) {
+            log.error("Failed to fetch prices for ticker {}: {}", ticker, e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Fetch full historical data (20+ years) for a ticker from AlphaVantage API.
+     * This method is intended for initial backfill operations to load comprehensive
+     * historical data.
+     * Uses full output size which returns all available historical data.
+     *
+     * @param ticker
+     *               the stock ticker symbol
+     * @return list of saved DailyPrice entities
+     */
+    @SuppressWarnings("unchecked")
+    public List<DailyPrice> fetchAndSaveFullHistoricalPrices(String ticker) {
+        log.info("Fetching full historical prices (20+ years) for ticker: {}", ticker);
+
+        try {
+            Map<String, Object> response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder.queryParam("function", "TIME_SERIES_DAILY")
+                            .queryParam("symbol", ticker).queryParam("apikey", apiKey)
+                            .queryParam("outputsize", "full").build())
+                    .retrieve().bodyToMono(Map.class).block();
+
+            if (response == null) {
+                log.warn("Empty response from AlphaVantage for ticker: {}", ticker);
+                return Collections.emptyList();
+            }
+
+            log.info("API Response keys: {}", response.keySet());
+            if (response.containsKey("Information")) {
+                log.warn("API Information: {}", response.get("Information"));
+            }
+
+            // Check for API error
+            if (response.containsKey("Error Message")) {
+                log.error("AlphaVantage API error for {}: {}", ticker, response.get("Error Message"));
+                return Collections.emptyList();
+            }
+
+            // Check for rate limit
+            if (response.containsKey("Note")) {
+                log.warn("AlphaVantage rate limit reached: {}", response.get("Note"));
+                return Collections.emptyList();
+            }
+
+            return mapAndSavePrices(ticker, response);
+
+        } catch (Exception e) {
+            log.error("Failed to fetch full historical prices for ticker {}: {}", ticker, e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Save externally fetched prices (e.g., from Yahoo Finance).
+     */
+    public List<DailyPrice> saveExternalPrices(String ticker, List<DailyPriceDTO> priceDtos) {
+        if (priceDtos == null || priceDtos.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<DailyPrice> prices = new ArrayList<>();
+        for (DailyPriceDTO dto : priceDtos) {
+            DailyPrice price = DailyPrice.builder()
+                    .ticker(ticker.toUpperCase())
+                    .priceYear(dto.getDate().getYear())
+                    .tradeDate(dto.getDate())
+                    .openPrice(dto.getOpen())
+                    .highPrice(dto.getHigh())
+                    .lowPrice(dto.getLow())
+                    .closePrice(dto.getClose())
+                    .adjustedClose(dto.getAdjustedClose())
+                    .volume(dto.getVolume())
+                    .dividendAmount(BigDecimal.ZERO)
+                    .splitCoefficient(BigDecimal.ONE)
+                    .build();
+            prices.add(price);
+        }
+
+        // Group by year (Partition-Aware Batching)
+        // This ensures efficient writes as each year corresponds to a unique partition:
+        // (ticker, year)
+        Map<Integer, List<DailyPrice>> byYear = prices.stream()
+                .collect(Collectors.groupingBy(DailyPrice::getPriceYear));
+
+        List<DailyPrice> savedTotal = new ArrayList<>();
+
+        // Save year by year (~252 records per batch)
+        byYear.forEach((year, yearPrices) -> {
+            savedTotal.addAll(dailyPriceRepository.saveAll(yearPrices));
+            log.debug("Saved year {} for ticker {} ({} records)", year, ticker, yearPrices.size());
+        });
+
+        log.info("Saved {} external prices for ticker {} across {} years", savedTotal.size(), ticker, byYear.size());
+        return savedTotal;
+    }
+
+    /**
+     * Map the AlphaVantage JSON response to DailyPrice entities and save them.
+     */
+    @SuppressWarnings("unchecked")
+    private List<DailyPrice> mapAndSavePrices(String ticker, Map<String, Object> response) {
+        Map<String, Map<String, String>> timeSeries = (Map<String, Map<String, String>>) response
+                .get("Time Series (Daily)");
+
+        if (timeSeries == null || timeSeries.isEmpty()) {
+            log.warn("No time series data in response for ticker: {}", ticker);
+            return Collections.emptyList();
+        }
+
+        List<DailyPrice> prices = new ArrayList<>();
+
+        for (Map.Entry<String, Map<String, String>> entry : timeSeries.entrySet()) {
+            try {
+                LocalDate tradeDate = LocalDate.parse(entry.getKey(), DATE_FORMATTER);
+                Map<String, String> priceData = entry.getValue();
+
+                DailyPrice dailyPrice = DailyPrice.builder().ticker(ticker.toUpperCase()).priceYear(tradeDate.getYear()) // Year
+                                                                                                                         // for
+                                                                                                                         // partition
+                                                                                                                         // bucketing
+                        .tradeDate(tradeDate).openPrice(new BigDecimal(priceData.get("1. open")))
+                        .highPrice(new BigDecimal(priceData.get("2. high")))
+                        .lowPrice(new BigDecimal(priceData.get("3. low")))
+                        .closePrice(new BigDecimal(priceData.get("4. close")))
+                        .adjustedClose(new BigDecimal(priceData.get("4. close")))
+                        .volume(Long.parseLong(priceData.get("5. volume")))
+                        .dividendAmount(BigDecimal.ZERO)
+                        .splitCoefficient(BigDecimal.ONE).build();
+
+                prices.add(dailyPrice);
+
+            } catch (Exception e) {
+                log.warn("Failed to parse price data for date {}: {}", entry.getKey(), e.getMessage());
+            }
+        }
+
+        // Save all prices to Cassandra
+        List<DailyPrice> savedPrices = dailyPriceRepository.saveAll(prices);
+        log.info("Saved {} daily prices for ticker {}", savedPrices.size(), ticker);
+
+        return savedPrices;
+    }
+
+    /**
+     * Fetch only the latest price for a ticker (for scheduled updates).
+     */
+    @SuppressWarnings("unchecked")
+    public Mono<DailyPrice> fetchLatestPrice(String ticker) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder.queryParam("function", "GLOBAL_QUOTE").queryParam("symbol", ticker)
+                        .queryParam("apikey", apiKey).build())
+                .retrieve().bodyToMono(Map.class).map(response -> mapGlobalQuote(ticker, response)).doOnNext(price -> {
+                    if (price != null) {
+                        dailyPriceRepository.save(price);
+                        log.debug("Saved latest price for {}: {}", ticker, price.getClosePrice());
+                    }
+                });
+    }
+
+    @SuppressWarnings({ "unchecked", "unused" })
+    private DailyPrice mapGlobalQuote(String ticker, Map<String, Object> response) {
+        Map<String, String> quote = (Map<String, String>) response.get("Global Quote");
+
+        if (quote == null || quote.isEmpty()) {
+            log.warn("No global quote data for ticker: {}", ticker);
+            return null;
+        }
+
+        try {
+            LocalDate tradeDate = LocalDate.parse(quote.get("07. latest trading day"), DATE_FORMATTER);
+
+            return DailyPrice.builder().ticker(ticker.toUpperCase()).priceYear(tradeDate.getYear()).tradeDate(tradeDate)
+                    .openPrice(new BigDecimal(quote.get("02. open"))).highPrice(new BigDecimal(quote.get("03. high")))
+                    .lowPrice(new BigDecimal(quote.get("04. low"))).closePrice(new BigDecimal(quote.get("05. price")))
+                    .adjustedClose(new BigDecimal(quote.get("05. price"))) // Use close as adjusted for quote
+                    .volume(Long.parseLong(quote.get("06. volume"))).dividendAmount(BigDecimal.ZERO)
+                    .splitCoefficient(BigDecimal.ONE).build();
+
+        } catch (Exception e) {
+            log.error("Failed to parse global quote for {}: {}", ticker, e.getMessage());
+            return null;
+        }
+    }
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/service/PortfolioPulse.code-workspace">
+{
+	"folders": [
+		{
+			"path": "../../../../../../../.."
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/java/com/portfoliopulse/heartbeat/PulseHeartbeatApplication.java">
+package com.portfoliopulse.heartbeat;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication(scanBasePackages = { "com.portfoliopulse.heartbeat" }, exclude = {
+        DataSourceAutoConfiguration.class,
+        HibernateJpaAutoConfiguration.class
+})
+@EnableScheduling
+public class PulseHeartbeatApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(PulseHeartbeatApplication.class, args);
+    }
+}
+</file>
+
+<file path="pulse-heartbeat/src/main/resources/application.yml">
+spring:
+  application:
+    name: pulse-heartbeat
+  
+  data:
+    cassandra:
+      keyspace-name: portfoliopulse
+      contact-points: localhost
+      port: 9042
+      local-datacenter: datacenter1
+      schema-action: create_if_not_exists
+
+# AlphaVantage API configuration
+alphavantage:
+  api-key: ${ALPHAVANTAGE_API_KEY:demo}
+  base-url: https://www.alphavantage.co/query
+
+# Scheduler configuration
+heartbeat:
+  scheduler:
+    enabled: true
+    cron: "0 0 18 * * MON-FRI"  # Run at 6 PM on weekdays (after market close)
+
+logging:
+  level:
+    com.portfoliopulse.heartbeat: DEBUG
+</file>
+
+<file path="pulse-heartbeat/src/test/java/com/portfoliopulse/heartbeat/config/TestCassandraConfig.java">
+package com.portfoliopulse.heartbeat.config;
+
+import com.datastax.oss.driver.api.core.CqlSession;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
+import org.springframework.data.cassandra.config.CqlSessionFactoryBean;
+import org.springframework.data.cassandra.config.SchemaAction;
+import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
+import org.springframework.data.cassandra.core.cql.keyspace.KeyspaceOption;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Test-specific Cassandra configuration. This configuration is only active
+ * during tests.
+ */
+@Configuration
+@Profile("test")
+public class TestCassandraConfig extends AbstractCassandraConfiguration {
+
+	@Value("${spring.data.cassandra.keyspace-name}")
+	private String keyspaceName;
+
+	@Value("${spring.data.cassandra.contact-points}")
+	private String contactPoints;
+
+	@Value("${spring.data.cassandra.port}")
+	private int port;
+
+	@Value("${spring.data.cassandra.local-datacenter}")
+	private String localDatacenter;
+
+	@Override
+	protected String getKeyspaceName() {
+		return keyspaceName;
+	}
+
+	@Override
+	protected String getContactPoints() {
+		return contactPoints;
+	}
+
+	@Override
+	protected int getPort() {
+		return port;
+	}
+
+	@Override
+	protected String getLocalDataCenter() {
+		return localDatacenter;
+	}
+
+	@Override
+	public SchemaAction getSchemaAction() {
+		return SchemaAction.CREATE_IF_NOT_EXISTS;
+	}
+
+	@Override
+	public String[] getEntityBasePackages() {
+		return new String[]{"com.portfoliopulse.heartbeat.entity"};
+	}
+
+	@Override
+	protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
+		return Collections.singletonList(CreateKeyspaceSpecification.createKeyspace(keyspaceName).ifNotExists()
+				.with(KeyspaceOption.DURABLE_WRITES, true).withSimpleReplication(1L));
+	}
+}
+</file>
+
+<file path="pulse-heartbeat/src/test/java/com/portfoliopulse/heartbeat/repository/DailyPriceRepositoryTest.java">
+package com.portfoliopulse.heartbeat.repository;
+
+import com.portfoliopulse.heartbeat.entity.DailyPrice;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.cassandra.core.CassandraTemplate;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.cassandra.CassandraContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * Integration test for DailyPriceRepository using Testcontainers Cassandra.
+ * Verifies that data is correctly bucketed by year (partition key).
+ */
+@SpringBootTest
+@Testcontainers
+class DailyPriceRepositoryTest {
+
+	@Container
+	static CassandraContainer cassandra = new CassandraContainer("cassandra:4.1").withInitScript("cassandra-init.cql"); // Create
+																														// keyspace
+																														// on
+																														// startup
+
+	@DynamicPropertySource
+	static void cassandraProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.data.cassandra.contact-points", cassandra::getHost);
+		registry.add("spring.data.cassandra.port", () -> cassandra.getMappedPort(9042));
+		registry.add("spring.data.cassandra.local-datacenter", cassandra::getLocalDatacenter);
+		registry.add("spring.data.cassandra.keyspace-name", () -> "test_keyspace");
+		registry.add("spring.data.cassandra.username", cassandra::getUsername);
+		registry.add("spring.data.cassandra.password", cassandra::getPassword);
+		registry.add("spring.data.cassandra.schema-action", () -> "create_if_not_exists");
+	}
+
+	@Autowired
+	private DailyPriceRepository dailyPriceRepository;
+
+	@Autowired
+	private CassandraTemplate cassandraTemplate;
+
+	@BeforeEach
+	void setUp() {
+		// Table is created automatically by Spring Data Cassandra
+		// Tests are isolated by using different tickers
+	}
+
+	@Test
+	@DisplayName("Should bucket data by year in partition key")
+	void shouldBucketDataByYear() {
+		// Given: Prices from different years
+		DailyPrice price2025 = DailyPrice.builder().ticker("AAPL").priceYear(2025).tradeDate(LocalDate.of(2025, 12, 15))
+				.openPrice(new BigDecimal("150.00")).highPrice(new BigDecimal("155.00"))
+				.lowPrice(new BigDecimal("148.00")).closePrice(new BigDecimal("152.00"))
+				.adjustedClose(new BigDecimal("152.00")).volume(1000000L).dividendAmount(BigDecimal.ZERO)
+				.splitCoefficient(BigDecimal.ONE).build();
+
+		DailyPrice price2026a = DailyPrice.builder().ticker("AAPL").priceYear(2026).tradeDate(LocalDate.of(2026, 1, 5))
+				.openPrice(new BigDecimal("155.00")).highPrice(new BigDecimal("160.00"))
+				.lowPrice(new BigDecimal("154.00")).closePrice(new BigDecimal("158.00"))
+				.adjustedClose(new BigDecimal("158.00")).volume(1200000L).dividendAmount(BigDecimal.ZERO)
+				.splitCoefficient(BigDecimal.ONE).build();
+
+		DailyPrice price2026b = DailyPrice.builder().ticker("AAPL").priceYear(2026).tradeDate(LocalDate.of(2026, 1, 6))
+				.openPrice(new BigDecimal("158.00")).highPrice(new BigDecimal("162.00"))
+				.lowPrice(new BigDecimal("157.00")).closePrice(new BigDecimal("161.00"))
+				.adjustedClose(new BigDecimal("161.00")).volume(1100000L).dividendAmount(BigDecimal.ZERO)
+				.splitCoefficient(BigDecimal.ONE).build();
+
+		// When: Save prices
+		dailyPriceRepository.saveAll(List.of(price2025, price2026a, price2026b));
+
+		// Then: Query by year bucket
+		List<DailyPrice> prices2025 = dailyPriceRepository.findByTickerAndPriceYear("AAPL", 2025);
+		List<DailyPrice> prices2026 = dailyPriceRepository.findByTickerAndPriceYear("AAPL", 2026);
+
+		assertThat(prices2025).hasSize(1);
+		assertThat(prices2025.get(0).getTradeDate()).isEqualTo(LocalDate.of(2025, 12, 15));
+
+		assertThat(prices2026).hasSize(2);
+		// Should be ordered by trade_date descending (most recent first)
+		assertThat(prices2026.get(0).getTradeDate()).isEqualTo(LocalDate.of(2026, 1, 6));
+		assertThat(prices2026.get(1).getTradeDate()).isEqualTo(LocalDate.of(2026, 1, 5));
+	}
+
+	@Test
+	@DisplayName("Should count prices per year bucket correctly")
+	void shouldCountPricesPerYearBucket() {
+		// Given: Multiple prices in different year buckets
+		for (int day = 1; day <= 5; day++) {
+			DailyPrice price = DailyPrice.builder().ticker("GOOGL").priceYear(2026)
+					.tradeDate(LocalDate.of(2026, 1, day)).openPrice(new BigDecimal("100.00"))
+					.highPrice(new BigDecimal("105.00")).lowPrice(new BigDecimal("98.00"))
+					.closePrice(new BigDecimal("102.00")).adjustedClose(new BigDecimal("102.00")).volume(500000L)
+					.dividendAmount(BigDecimal.ZERO).splitCoefficient(BigDecimal.ONE).build();
+			dailyPriceRepository.save(price);
+		}
+
+		// Add one for 2025
+		DailyPrice price2025 = DailyPrice.builder().ticker("GOOGL").priceYear(2025)
+				.tradeDate(LocalDate.of(2025, 12, 31)).openPrice(new BigDecimal("95.00"))
+				.highPrice(new BigDecimal("100.00")).lowPrice(new BigDecimal("94.00"))
+				.closePrice(new BigDecimal("98.00")).adjustedClose(new BigDecimal("98.00")).volume(400000L)
+				.dividendAmount(BigDecimal.ZERO).splitCoefficient(BigDecimal.ONE).build();
+		dailyPriceRepository.save(price2025);
+
+		// When: Count by year
+		long count2026 = dailyPriceRepository.countByTickerAndPriceYear("GOOGL", 2026);
+		long count2025 = dailyPriceRepository.countByTickerAndPriceYear("GOOGL", 2025);
+
+		// Then
+		assertThat(count2026).isEqualTo(5);
+		assertThat(count2025).isEqualTo(1);
+	}
+
+	@Test
+	@DisplayName("Should retrieve most recent prices first")
+	void shouldRetrieveMostRecentPricesFirst() {
+		// Given: Multiple prices
+		for (int day = 1; day <= 10; day++) {
+			DailyPrice price = DailyPrice.builder().ticker("MSFT").priceYear(2026).tradeDate(LocalDate.of(2026, 1, day))
+					.closePrice(new BigDecimal(String.valueOf(100 + day))).build();
+			dailyPriceRepository.save(price);
+		}
+
+		// When: Query with limit
+		List<DailyPrice> recentPrices = dailyPriceRepository.findRecentPrices("MSFT", 2026, 3);
+
+		// Then: Should return most recent 3, ordered descending
+		assertThat(recentPrices).hasSize(3);
+		assertThat(recentPrices.get(0).getTradeDate()).isEqualTo(LocalDate.of(2026, 1, 10));
+		assertThat(recentPrices.get(1).getTradeDate()).isEqualTo(LocalDate.of(2026, 1, 9));
+		assertThat(recentPrices.get(2).getTradeDate()).isEqualTo(LocalDate.of(2026, 1, 8));
+	}
+
+	@Test
+	@DisplayName("Should find specific price by ticker, year, and date")
+	void shouldFindSpecificPrice() {
+		// Given
+		LocalDate targetDate = LocalDate.of(2026, 1, 10);
+		DailyPrice price = DailyPrice.builder().ticker("NVDA").priceYear(2026).tradeDate(targetDate)
+				.closePrice(new BigDecimal("500.00")).build();
+		dailyPriceRepository.save(price);
+
+		// When
+		var found = dailyPriceRepository.findByTickerAndPriceYearAndTradeDate("NVDA", 2026, targetDate);
+
+		// Then
+		assertThat(found).isPresent();
+		assertThat(found.get().getClosePrice()).isEqualByComparingTo(new BigDecimal("500.00"));
+	}
+}
+</file>
+
+<file path="pulse-heartbeat/src/test/java/com/portfoliopulse/heartbeat/TestApplication.java">
+package com.portfoliopulse.heartbeat;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.cassandra.CassandraReactiveDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.cassandra.CassandraReactiveRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
+
+/**
+ * Minimal test configuration for Cassandra-only tests. Excludes all
+ * auto-configuration to use custom TestCassandraConfig.
+ */
+@SpringBootApplication(scanBasePackages = {"com.portfoliopulse.heartbeat.repository",
+		"com.portfoliopulse.heartbeat.config"}, exclude = {DataSourceAutoConfiguration.class,
+				HibernateJpaAutoConfiguration.class, CassandraAutoConfiguration.class,
+				CassandraDataAutoConfiguration.class, CassandraReactiveDataAutoConfiguration.class,
+				CassandraReactiveRepositoriesAutoConfiguration.class})
+@EnableCassandraRepositories(basePackages = "com.portfoliopulse.heartbeat.repository")
+public class TestApplication {
+	// Minimal Cassandra test bootstrap with custom configuration
+}
+</file>
+
+<file path="pulse-heartbeat/src/test/resources/application.yml">
+spring:
+  application:
+    name: pulse-heartbeat-test
+  
+  profiles:
+    active: test
+  
+  data:
+    cassandra:
+      keyspace-name: test_keyspace
+      schema-action: create_if_not_exists
+  
+  # Disable all autoconfiguration except what we need
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.ai.autoconfigure.vertexai.gemini.VertexAiGeminiAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
+
+alphavantage:
+  api-key: demo
+  base-url: https://www.alphavantage.co/query
+
+heartbeat:
+  scheduler:
+    enabled: false
+
+logging:
+  level:
+    com.portfoliopulse: DEBUG
+    org.testcontainers: INFO
+    org.springframework.data.cassandra: DEBUG
+</file>
+
+<file path="pulse-heartbeat/src/test/resources/cassandra-init.cql">
+CREATE KEYSPACE IF NOT EXISTS test_keyspace 
+WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+</file>
+
+<file path="pulse-heartbeat/API_KEY_SETUP.md">
+# API Key Configuration Guide
+
+## Storing Your AlphaVantage API Key Securely
+
+Your AlphaVantage API key should **never** be committed to Git. Here are the recommended approaches:
+
+---
+
+## Option 1: Environment Variable (Recommended for Production)
+
+### macOS/Linux:
+
+```bash
+# Set for current terminal session
+export ALPHAVANTAGE_API_KEY=your_actual_api_key_here
+
+# Make it permanent by adding to your shell profile
+echo 'export ALPHAVANTAGE_API_KEY=your_actual_api_key_here' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### Windows (PowerShell):
+
+```powershell
+# Set for current session
+$env:ALPHAVANTAGE_API_KEY="your_actual_api_key_here"
+
+# Make it permanent (System-wide)
+[System.Environment]::SetEnvironmentVariable('ALPHAVANTAGE_API_KEY', 'your_actual_api_key_here', 'User')
+```
+
+Then run your application normally:
+```bash
+mvn spring-boot:run -pl pulse-heartbeat
+```
+
+---
+
+## Option 2: application-local.yml (Recommended for Development)
+
+1. **Edit the file**: `pulse-heartbeat/src/main/resources/application-local.yml`
+2. **Replace** `YOUR_ALPHAVANTAGE_API_KEY_HERE` with your actual API key
+3. **Run with the local profile**:
+
+```bash
+mvn spring-boot:run -pl pulse-heartbeat -Dspring-boot.run.profiles=local
+```
+
+Or set the profile in your IDE:
+- **IntelliJ IDEA**: Run Configuration → Environment Variables → `SPRING_PROFILES_ACTIVE=local`
+- **VS Code**: Add to `launch.json`: `"env": { "SPRING_PROFILES_ACTIVE": "local" }`
+
+**Note**: The `application-local.yml` file is already added to `.gitignore` and will not be committed.
+
+---
+
+## Option 3: .env File (Alternative)
+
+Create a `.env` file in the project root:
+
+```bash
+ALPHAVANTAGE_API_KEY=your_actual_api_key_here
+```
+
+Then source it before running:
+```bash
+source .env
+mvn spring-boot:run -pl pulse-heartbeat
+```
+
+**Note**: The `.env` file is already added to `.gitignore`.
+
+---
+
+## Verification
+
+To verify your API key is loaded correctly, check the application logs on startup. You should see:
+```
+Fetching daily adjusted prices for ticker: AAPL
+```
+
+If you see `demo` in the API URL, your key is not being loaded properly.
+
+---
+
+## Security Best Practices
+
+✅ **DO**:
+- Use environment variables for production deployments
+- Use `application-local.yml` for local development
+- Keep API keys in secure password managers
+- Rotate API keys periodically
+
+❌ **DON'T**:
+- Commit API keys to Git
+- Share API keys in chat/email
+- Hardcode API keys in source code
+- Use production keys in development
+
+---
+
+## Getting Your AlphaVantage API Key
+
+If you don't have an API key yet:
+1. Visit: https://www.alphavantage.co/support/#api-key
+2. Enter your email and get a free API key
+3. Free tier: 25 requests/day, 5 requests/minute
+</file>
+
+<file path="pulse-heartbeat/pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.portfoliopulse</groupId>
+        <artifactId>portfoliopulse-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>pulse-heartbeat</artifactId>
+    <name>Pulse Heartbeat</name>
+    <description>Market data ingestion module with Cassandra storage and AlphaVantage API</description>
+
+    <dependencies>
+        <!-- Internal Module -->
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- pulse-ledger for accessing transaction tickers -->
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-ledger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spring Data Cassandra -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-cassandra</artifactId>
+        </dependency>
+
+        <!-- WebClient for API calls -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- Spring Scheduling -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Spring Web for REST endpoints -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>cassandra</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>exec</classifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+</file>
+
+<file path="pulse-intel/src/main/java/com/portfoliopulse/intel/config/AiConfig.java">
+package com.portfoliopulse.intel.config;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.net.http.HttpClient;
+
+@Configuration
+public class AiConfig {
+
+    @Bean
+    public HttpClient httpClient() {
+        return HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        return mapper;
+    }
+}
+</file>
+
+<file path="pulse-intel/src/main/java/com/portfoliopulse/intel/controller/AnalysisController.java">
+package com.portfoliopulse.intel.controller;
+
+import com.portfoliopulse.intel.model.AnalysisReport;
+import com.portfoliopulse.intel.service.PortfolioAnalyst;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/v1/analysis")
+public class AnalysisController {
+
+    private final PortfolioAnalyst portfolioAnalyst;
+
+    public AnalysisController(PortfolioAnalyst portfolioAnalyst) {
+        this.portfolioAnalyst = portfolioAnalyst;
+    }
+
+    @GetMapping("/{ticker}")
+    public ResponseEntity<AnalysisReport> analyzeTicker(@PathVariable String ticker) {
+        return ResponseEntity.ok(portfolioAnalyst.analyzePortfolio(ticker));
+    }
+}
+</file>
+
+<file path="pulse-intel/src/main/java/com/portfoliopulse/intel/model/AnalysisReport.java">
+package com.portfoliopulse.intel.model;
+
+import java.util.List;
+
+public record AnalysisReport(
+    int healthScore,
+    String summary,
+    List<String> riskFlags,
+    List<String> rebalancingSuggestions
+) {}
+</file>
+
+<file path="pulse-intel/src/main/java/com/portfoliopulse/intel/service/PortfolioAnalyst.java">
+package com.portfoliopulse.intel.service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.portfoliopulse.common.dto.PortfolioSummary;
+import com.portfoliopulse.heartbeat.entity.DailyPrice;
+import com.portfoliopulse.heartbeat.repository.DailyPriceRepository;
+import com.portfoliopulse.intel.model.AnalysisReport;
+import com.portfoliopulse.ledger.service.PerformanceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.math.BigDecimal;
+
+@Service
+public class PortfolioAnalyst {
+
+    private static final Logger log = LoggerFactory.getLogger(PortfolioAnalyst.class);
+
+    private final String apiKey;
+
+    private final PerformanceService performanceService;
+    private final DailyPriceRepository dailyPriceRepository;
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
+
+    public PortfolioAnalyst(PerformanceService performanceService,
+            DailyPriceRepository dailyPriceRepository,
+            HttpClient httpClient,
+            ObjectMapper objectMapper,
+            @Value("${ai.google.genai.api-key:}") String apiKey) {
+        this.performanceService = performanceService;
+        this.dailyPriceRepository = dailyPriceRepository;
+        this.httpClient = httpClient;
+        this.objectMapper = objectMapper;
+        this.apiKey = apiKey;
+    }
+
+    public AnalysisReport analyzePortfolio(String ticker) {
+        // 1. Fetch Portfolio Data
+        PortfolioSummary summary = performanceService.calculateWeightedAverage(ticker);
+
+        // 2. Fetch Market Data (Last 30 days)
+        int currentYear = LocalDate.now().getYear();
+        List<DailyPrice> history = dailyPriceRepository.findRecentPrices(ticker, currentYear, 30);
+
+        BigDecimal currentPrice = history.isEmpty() ? BigDecimal.ZERO : history.get(0).getClosePrice();
+        BigDecimal marketValue = currentPrice.multiply(summary.totalQuantity());
+        BigDecimal unrealizedPnL = marketValue.subtract(summary.totalCost());
+
+        // 3. Construct Prompt with JSON instruction
+        String promptText = String.format("""
+                You are a senior financial analyst. Analyze the following stock position.
+
+                **Position Details:**
+                - Ticker: %s
+                - Quantity: %s
+                - Average Cost Basis: %s
+                - Total Cost: %s
+                - Current Market Price: %s
+                - Estimated Market Value: %s
+                - Estimated Unrealized P&L: %s
+                - Sector: %s
+
+                **Market Context (Recent History):**
+                %s
+
+                **Instructions:**
+                Return a JSON object with strictly these fields:
+                - healthScore (int, 0-100)
+                - summary (String, concise analysis)
+                - riskFlags (List of Strings)
+                - rebalancingSuggestions (List of Strings)
+
+                Return ONLY the raw JSON string, no markdown formatting.
+                """,
+                summary.ticker(),
+                summary.totalQuantity(),
+                summary.averageCostBasis(),
+                summary.totalCost(),
+                currentPrice,
+                marketValue,
+                unrealizedPnL,
+                summary.sector(),
+                formatHistory(history));
+
+        // 4. Call AI via REST
+        return callGemini(promptText);
+    }
+
+    private AnalysisReport callGemini(String promptText) {
+        try {
+            if (apiKey == null || apiKey.isEmpty()) {
+                return new AnalysisReport(0, "API Key Missing", List.of("Security Risk"),
+                        List.of("Configure GEMINI_API_KEY"));
+            }
+
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
+                    + apiKey;
+
+            ObjectNode rootNode = objectMapper.createObjectNode();
+            ArrayNode contentsNode = rootNode.putArray("contents");
+            ObjectNode contentNode = contentsNode.addObject();
+            ArrayNode partsNode = contentNode.putArray("parts");
+            partsNode.addObject().put("text", promptText);
+
+            String requestBody = objectMapper.writeValueAsString(rootNode);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                log.error("Gemini API Error {}: {}", response.statusCode(), response.body());
+                return new AnalysisReport(0, "Error calling AI service", List.of("API Error"), List.of());
+            }
+
+            JsonNode jsonResponse = objectMapper.readTree(response.body());
+            String rawText = jsonResponse.path("candidates").get(0).path("content").path("parts").get(0).path("text")
+                    .asText();
+
+            // Clean up possible markdown or whitespace
+            String cleanedJson = rawText.replaceAll("(?s)^.*?(\\{.*\\}).*$", "$1");
+
+            JsonNode resultNode = objectMapper.readTree(cleanedJson);
+
+            int healthScore = resultNode.path("healthScore").asInt();
+            String summary = resultNode.path("summary").asText();
+            List<String> riskFlags = new ArrayList<>();
+            resultNode.path("riskFlags").forEach(n -> riskFlags.add(n.asText()));
+            List<String> suggestions = new ArrayList<>();
+            resultNode.path("rebalancingSuggestions").forEach(n -> suggestions.add(n.asText()));
+
+            return new AnalysisReport(healthScore, summary, riskFlags, suggestions);
+
+        } catch (Exception e) {
+            log.error("Failed to analyze portfolio with AI", e);
+            return new AnalysisReport(0, "Processing Exception: " + e.getMessage(), List.of("System Error"), List.of());
+        }
+    }
+
+    private String formatHistory(List<DailyPrice> history) {
+        if (history.isEmpty())
+            return "No recent market data available.";
+        return history.stream()
+                .map(p -> String.format("%s: Close=%.2f, Vol=%d", p.getTradeDate(), p.getClosePrice(), p.getVolume()))
+                .collect(Collectors.joining("\n"));
+    }
+}
+</file>
+
+<file path="pulse-intel/src/test/java/com/portfoliopulse/intel/service/PortfolioAnalystTest.java">
+package com.portfoliopulse.intel.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.portfoliopulse.common.dto.PortfolioSummary;
+import com.portfoliopulse.heartbeat.entity.DailyPrice;
+import com.portfoliopulse.heartbeat.repository.DailyPriceRepository;
+import com.portfoliopulse.intel.model.AnalysisReport;
+import com.portfoliopulse.ledger.service.PerformanceService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class PortfolioAnalystTest {
+
+        @Mock
+        private PerformanceService performanceService;
+
+        @Mock
+        private DailyPriceRepository dailyPriceRepository;
+
+        @Mock
+        private HttpClient httpClient;
+
+        @Mock
+        private HttpResponse<String> httpResponse;
+
+        private PortfolioAnalyst portfolioAnalyst;
+        private ObjectMapper objectMapper = new ObjectMapper();
+
+        @BeforeEach
+        void setUp() {
+                portfolioAnalyst = new PortfolioAnalyst(performanceService, dailyPriceRepository, httpClient,
+                                objectMapper, "test-api-key");
+        }
+
+        @Test
+        void analyzePortfolio_Success() throws Exception {
+                // Arrange
+                String ticker = "AAPL";
+                PortfolioSummary summary = new PortfolioSummary(
+                                ticker, BigDecimal.valueOf(10), BigDecimal.valueOf(150), BigDecimal.valueOf(1500),
+                                "Technology");
+                when(performanceService.calculateWeightedAverage(ticker)).thenReturn(summary);
+
+                DailyPrice price = DailyPrice.builder()
+                                .ticker(ticker)
+                                .closePrice(BigDecimal.valueOf(180))
+                                .tradeDate(LocalDate.now())
+                                .volume(1000000L)
+                                .build();
+                when(dailyPriceRepository.findRecentPrices(eq(ticker), anyInt(), eq(30)))
+                                .thenReturn(List.of(price));
+
+                // Mock HTTP Response
+                String jsonResponse = """
+                                {
+                                  "candidates": [{
+                                    "content": {
+                                      "parts": [{
+                                        "text": "{\\"healthScore\\": 85, \\"summary\\": \\"Good\\", \\"riskFlags\\": [], \\"rebalancingSuggestions\\": []}"
+                                      }]
+                                    }
+                                  }]
+                                }
+                                """;
+                when(httpResponse.statusCode()).thenReturn(200);
+                when(httpResponse.body()).thenReturn(jsonResponse);
+                when(httpClient.send(any(java.net.http.HttpRequest.class),
+                                any(java.net.http.HttpResponse.BodyHandler.class)))
+                                .thenReturn(httpResponse);
+
+                // Act
+                AnalysisReport report = portfolioAnalyst.analyzePortfolio(ticker);
+
+                // Assert
+                assertNotNull(report);
+                assertEquals(85, report.healthScore());
+                assertEquals("Good", report.summary());
+                verify(performanceService).calculateWeightedAverage(ticker);
+                verify(dailyPriceRepository).findRecentPrices(eq(ticker), anyInt(), eq(30));
+        }
+}
+</file>
+
+<file path="pulse-intel/src/test/java/com/portfoliopulse/intel/GoogleGenAiProbeTest.java">
+package com.portfoliopulse.intel;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class GoogleGenAiProbeTest {
+
+    @Test
+    public void testGeminiConnectivityRest() throws Exception {
+        // Retrieve API Key
+        String apiKey = System.getenv("GEMINI_API_KEY");
+        if (apiKey == null || apiKey.isEmpty()) {
+            apiKey = "AIzaSyDhVRG5Jd2JVpQCry4xjM04LpjXsYZgd5E";
+        }
+
+        System.out.println("Testing Gemini Connectivity (REST) with API Key: " + apiKey.substring(0, 5) + "...");
+
+        // Endpoint for Gemini 1.5 Flash (generateContent)
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
+                + apiKey;
+
+        // JSON Payload
+        String jsonPayload = """
+                {
+                  "contents": [{
+                    "parts": [{"text": "Hello, explain how AI works in one sentence."}]
+                  }]
+                }
+                """;
+
+        // Build Request
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
+                .build();
+
+        // Send Request
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("Response Status Code: " + response.statusCode());
+        System.out.println("Response Body: " + response.body());
+
+        // Assertions
+        assertEquals(200, response.statusCode(), "Status code should be 200 OK");
+        assertNotNull(response.body(), "Response body should not be null");
+
+        // Simple Parsing Check
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.body());
+        JsonNode candidates = root.path("candidates");
+        if (candidates.isArray() && candidates.size() > 0) {
+            String text = candidates.get(0).path("content").path("parts").get(0).path("text").asText();
+            System.out.println("Parsed Text: " + text);
+            assertNotNull(text, "Extracted text should not be null");
+        } else {
+            System.err.println("No candidates found in response!");
+        }
+    }
+}
+</file>
+
+<file path="pulse-intel/pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.portfoliopulse</groupId>
+        <artifactId>portfoliopulse-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>pulse-intel</artifactId>
+    <name>Pulse Intel</name>
+    <description>Advanced portfolio analysis using RAG and AI</description>
+
+    <dependencies>
+        <!-- Internal Modules -->
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-ledger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-heartbeat</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
+
+        <!-- Spring Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Dnet.bytebuddy.experimental=true</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+</file>
+
+<file path="pulse-ledger/src/main/java/com/portfoliopulse/ledger/entity/Portfolio.java">
+package com.portfoliopulse.ledger.entity;
+
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * JPA entity representing a financial portfolio.
+ */
+@Entity
+@Table(name = "portfolios")
+public class Portfolio {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(nullable = false)
+	private String name;
+
+	@Column(nullable = false)
+	private String owner;
+
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
+
+	@OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Transaction> transactions = new ArrayList<>();
+
+	public Portfolio() {
+	}
+
+	public Portfolio(Long id, String name, String owner, LocalDateTime createdAt, List<Transaction> transactions) {
+		this.id = id;
+		this.name = name;
+		this.owner = owner;
+		this.createdAt = createdAt;
+		this.transactions = transactions != null ? transactions : new ArrayList<>();
+	}
+
+	@PrePersist
+	protected void onCreate() {
+		if (createdAt == null) {
+			createdAt = LocalDateTime.now();
+		}
+	}
+
+	// Getters and Setters
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public List<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+	// Builder pattern
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private Long id;
+		private String name;
+		private String owner;
+		private LocalDateTime createdAt;
+		private List<Transaction> transactions = new ArrayList<>();
+
+		public Builder id(Long id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder owner(String owner) {
+			this.owner = owner;
+			return this;
+		}
+
+		public Builder createdAt(LocalDateTime createdAt) {
+			this.createdAt = createdAt;
+			return this;
+		}
+
+		public Builder transactions(List<Transaction> transactions) {
+			this.transactions = transactions;
+			return this;
+		}
+
+		public Portfolio build() {
+			return new Portfolio(id, name, owner, createdAt, transactions);
+		}
+	}
+}
+</file>
+
+<file path="pulse-ledger/src/main/java/com/portfoliopulse/ledger/entity/Transaction.java">
+package com.portfoliopulse.ledger.entity;
+
+import com.portfoliopulse.common.TransactionType;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * JPA entity representing a financial transaction (BUY, SELL, or DIVIDEND).
+ */
+@Entity
+@Table(name = "transactions")
+public class Transaction {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(nullable = false)
+	private String ticker;
+
+	@Column(nullable = false, precision = 19, scale = 8)
+	private BigDecimal quantity;
+
+	@Column(nullable = false, precision = 19, scale = 4)
+	private BigDecimal price;
+
+	@Column(nullable = false)
+	private LocalDateTime timestamp;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private TransactionType type;
+
+	@Column
+	private String sector;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "portfolio_id")
+	private Portfolio portfolio;
+
+	public Transaction() {
+	}
+
+	public Transaction(Long id, String ticker, BigDecimal quantity, BigDecimal price, LocalDateTime timestamp,
+			TransactionType type, String sector, Portfolio portfolio) {
+		this.id = id;
+		this.ticker = ticker;
+		this.quantity = quantity;
+		this.price = price;
+		this.timestamp = timestamp;
+		this.type = type;
+		this.sector = sector;
+		this.portfolio = portfolio;
+	}
+
+	// Getters and Setters
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getTicker() {
+		return ticker;
+	}
+
+	public void setTicker(String ticker) {
+		this.ticker = ticker;
+	}
+
+	public BigDecimal getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(BigDecimal quantity) {
+		this.quantity = quantity;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public LocalDateTime getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(LocalDateTime timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public TransactionType getType() {
+		return type;
+	}
+
+	public void setType(TransactionType type) {
+		this.type = type;
+	}
+
+	public String getSector() {
+		return sector;
+	}
+
+	public void setSector(String sector) {
+		this.sector = sector;
+	}
+
+	public Portfolio getPortfolio() {
+		return portfolio;
+	}
+
+	public void setPortfolio(Portfolio portfolio) {
+		this.portfolio = portfolio;
+	}
+
+	// Builder pattern
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private Long id;
+		private String ticker;
+		private BigDecimal quantity;
+		private BigDecimal price;
+		private LocalDateTime timestamp;
+		private TransactionType type;
+		private String sector;
+		private Portfolio portfolio;
+
+		public Builder id(Long id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder ticker(String ticker) {
+			this.ticker = ticker;
+			return this;
+		}
+
+		public Builder quantity(BigDecimal quantity) {
+			this.quantity = quantity;
+			return this;
+		}
+
+		public Builder price(BigDecimal price) {
+			this.price = price;
+			return this;
+		}
+
+		public Builder timestamp(LocalDateTime timestamp) {
+			this.timestamp = timestamp;
+			return this;
+		}
+
+		public Builder type(TransactionType type) {
+			this.type = type;
+			return this;
+		}
+
+		public Builder sector(String sector) {
+			this.sector = sector;
+			return this;
+		}
+
+		public Builder portfolio(Portfolio portfolio) {
+			this.portfolio = portfolio;
+			return this;
+		}
+
+		public Transaction build() {
+			return new Transaction(id, ticker, quantity, price, timestamp, type, sector, portfolio);
+		}
+	}
+}
+</file>
+
+<file path="pulse-ledger/src/main/java/com/portfoliopulse/ledger/repository/PortfolioRepository.java">
+package com.portfoliopulse.ledger.repository;
+
+import com.portfoliopulse.ledger.entity.Portfolio;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+/**
+ * Spring Data JPA repository for Portfolio entities.
+ */
+@Repository
+public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
+
+	Optional<Portfolio> findByName(String name);
+
+	Optional<Portfolio> findByOwner(String owner);
+}
+</file>
+
+<file path="pulse-ledger/src/main/java/com/portfoliopulse/ledger/repository/TransactionRepository.java">
+package com.portfoliopulse.ledger.repository;
+
+import com.portfoliopulse.ledger.entity.Transaction;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Spring Data JPA repository for Transaction entities.
+ */
+@Repository
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
+	List<Transaction> findByTickerOrderByTimestampAsc(String ticker);
+
+	List<Transaction> findByPortfolioId(Long portfolioId);
+
+	@Query("SELECT t.sector FROM Transaction t WHERE t.ticker = :ticker AND t.sector IS NOT NULL ORDER BY t.timestamp DESC LIMIT 1")
+	Optional<String> findLatestSectorByTicker(@Param("ticker") String ticker);
+
+	@Query("SELECT DISTINCT t.ticker FROM Transaction t")
+	List<String> findDistinctTickers();
+}
+</file>
+
+<file path="pulse-ledger/src/main/java/com/portfoliopulse/ledger/service/PerformanceService.java">
+package com.portfoliopulse.ledger.service;
+
+import com.portfoliopulse.common.TransactionType;
+import com.portfoliopulse.common.dto.PortfolioSummary;
+import com.portfoliopulse.ledger.entity.Transaction;
+import com.portfoliopulse.ledger.repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
+/**
+ * Service for calculating portfolio performance using Weighted Average Cost
+ * Basis.
+ */
+@Service
+public class PerformanceService {
+
+	private static final Logger log = LoggerFactory.getLogger(PerformanceService.class);
+	private static final int CALCULATION_SCALE = 8;
+	private static final int DISPLAY_SCALE = 4;
+
+	private final TransactionRepository transactionRepository;
+
+	public PerformanceService(TransactionRepository transactionRepository) {
+		this.transactionRepository = transactionRepository;
+	}
+
+	/**
+	 * Calculate the Weighted Average Cost Basis for a specific ticker.
+	 */
+	@Transactional(readOnly = true)
+	public PortfolioSummary calculateWeightedAverage(String ticker) {
+		List<Transaction> transactions = transactionRepository.findByTickerOrderByTimestampAsc(ticker);
+
+		if (transactions.isEmpty()) {
+			log.info("No transactions found for ticker: {}", ticker);
+			return PortfolioSummary.builder()
+					.ticker(ticker)
+					.totalQuantity(BigDecimal.ZERO)
+					.averageCostBasis(BigDecimal.ZERO)
+					.totalCost(BigDecimal.ZERO)
+					.sector(null)
+					.build();
+		}
+
+		BigDecimal totalQuantity = BigDecimal.ZERO;
+		BigDecimal totalCost = BigDecimal.ZERO;
+		String sector = null;
+
+		for (Transaction tx : transactions) {
+			if (tx.getSector() != null) {
+				sector = tx.getSector();
+			}
+
+			if (tx.getType() == TransactionType.BUY) {
+				BigDecimal buyAmount = tx.getQuantity().multiply(tx.getPrice());
+				totalCost = totalCost.add(buyAmount);
+				totalQuantity = totalQuantity.add(tx.getQuantity());
+			} else if (tx.getType() == TransactionType.SELL) {
+				if (totalQuantity.compareTo(BigDecimal.ZERO) > 0) {
+					BigDecimal avgCost = totalCost.divide(totalQuantity, CALCULATION_SCALE, RoundingMode.HALF_UP);
+					BigDecimal costReduction = tx.getQuantity().multiply(avgCost);
+					totalCost = totalCost.subtract(costReduction);
+					totalQuantity = totalQuantity.subtract(tx.getQuantity());
+				}
+			}
+		}
+
+		BigDecimal averageCostBasis = BigDecimal.ZERO;
+		if (totalQuantity.compareTo(BigDecimal.ZERO) > 0) {
+			averageCostBasis = totalCost.divide(totalQuantity, DISPLAY_SCALE, RoundingMode.HALF_UP);
+		}
+
+		return PortfolioSummary.builder()
+				.ticker(ticker)
+				.totalQuantity(totalQuantity.setScale(DISPLAY_SCALE, RoundingMode.HALF_UP))
+				.averageCostBasis(averageCostBasis)
+				.totalCost(totalCost.setScale(DISPLAY_SCALE, RoundingMode.HALF_UP))
+				.sector(sector)
+				.build();
+	}
+
+	/**
+	 * Get summaries for all tickers with transactions.
+	 */
+	@Transactional(readOnly = true)
+	public List<PortfolioSummary> calculateAllPositions() {
+		List<String> tickers = transactionRepository.findDistinctTickers();
+		return tickers.stream()
+				.map(this::calculateWeightedAverage)
+				.toList();
+	}
+}
+</file>
+
+<file path="pulse-ledger/src/main/java/com/portfoliopulse/ledger/service/SectorTagger.java">
+package com.portfoliopulse.ledger.service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.portfoliopulse.ledger.repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Service for automatically tagging stock tickers with their sector using AI.
+ */
+@Service
+public class SectorTagger {
+
+	private static final Logger log = LoggerFactory.getLogger(SectorTagger.class);
+
+	@Value("${ai.google.genai.api-key:}")
+	private String apiKey;
+
+	private static final String SECTOR_PROMPT = """
+			Classify the stock ticker "%s" into exactly one of these sectors:
+			Technology, Healthcare, Finance, Energy, Consumer, Industrial, Materials, Utilities, Real Estate, Communication, or Other.
+
+			Respond with ONLY the sector name, nothing else.
+			""";
+
+	private final TransactionRepository transactionRepository;
+	private final Map<String, String> sectorCache = new ConcurrentHashMap<>();
+	private final HttpClient httpClient;
+	private final ObjectMapper objectMapper;
+
+	public SectorTagger(TransactionRepository transactionRepository, HttpClient httpClient, ObjectMapper objectMapper) {
+		this.transactionRepository = transactionRepository;
+		this.httpClient = httpClient;
+		this.objectMapper = objectMapper;
+	}
+
+	/**
+	 * Get the sector for a stock ticker, using AI to classify if not cached.
+	 */
+	public String tagSector(String ticker) {
+		String normalizedTicker = ticker.toUpperCase().trim();
+
+		if (sectorCache.containsKey(normalizedTicker)) {
+			log.debug("Sector cache hit for ticker: {}", normalizedTicker);
+			return sectorCache.get(normalizedTicker);
+		}
+
+		Optional<String> dbSector = transactionRepository.findLatestSectorByTicker(normalizedTicker);
+		if (dbSector.isPresent()) {
+			log.debug("Found sector in database for ticker: {} -> {}", normalizedTicker, dbSector.get());
+			sectorCache.put(normalizedTicker, dbSector.get());
+			return dbSector.get();
+		}
+
+		String sector = classifyWithAi(normalizedTicker);
+		sectorCache.put(normalizedTicker, sector);
+		log.info("AI classified ticker {} as sector: {}", normalizedTicker, sector);
+
+		return sector;
+	}
+
+	private String classifyWithAi(String ticker) {
+		try {
+			if (apiKey == null || apiKey.isEmpty()) {
+				log.warn("Gemini API Key is missing, defaulting to 'Other'");
+				return "Other";
+			}
+
+			String promptText = String.format(SECTOR_PROMPT, ticker);
+			String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
+					+ apiKey;
+
+			// Construct JSON Payload
+			ObjectNode rootNode = objectMapper.createObjectNode();
+			ArrayNode contentsNode = rootNode.putArray("contents");
+			ObjectNode contentNode = contentsNode.addObject();
+			ArrayNode partsNode = contentNode.putArray("parts");
+			partsNode.addObject().put("text", promptText);
+
+			String requestBody = objectMapper.writeValueAsString(rootNode);
+
+			HttpRequest request = HttpRequest.newBuilder()
+					.uri(URI.create(url))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(requestBody))
+					.build();
+
+			HttpResponse<String> response = httpClient.send(request,
+					HttpResponse.BodyHandlers.ofString());
+
+			if (response.statusCode() != 200) {
+				log.error("Gemini API returned status {}: {}", response.statusCode(), response.body());
+				return "Other";
+			}
+
+			JsonNode jsonResponse = objectMapper.readTree(response.body());
+			JsonNode candidates = jsonResponse.path("candidates");
+
+			if (candidates.isArray() && candidates.size() > 0) {
+				String text = candidates.get(0).path("content").path("parts").get(0).path("text").asText();
+				String sector = text != null ? text.trim() : "Other";
+				if (isValidSector(sector)) {
+					return sector;
+				}
+				log.warn("AI returned invalid sector '{}'", sector);
+			}
+
+			return "Other";
+
+		} catch (Exception e) {
+			log.error("Failed to classify ticker {} with AI: {}", ticker, e.getMessage());
+			return "Other";
+		}
+	}
+
+	private boolean isValidSector(String sector) {
+		return sector != null && switch (sector.toLowerCase()) {
+			case "technology", "healthcare", "finance", "energy", "consumer", "industrial", "materials", "utilities",
+					"real estate", "communication", "other" ->
+				true;
+			default -> false;
+		};
+	}
+
+	public void clearCache() {
+		sectorCache.clear();
+		log.info("Sector cache cleared");
+	}
+}
+</file>
+
+<file path="pulse-ledger/src/main/java/com/portfoliopulse/ledger/service/TransactionService.java">
+package com.portfoliopulse.ledger.service;
+
+import com.portfoliopulse.common.dto.PriceRequest;
+import com.portfoliopulse.ledger.entity.Transaction;
+import com.portfoliopulse.ledger.repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * Service for managing transactions (trades).
+ */
+@Service
+public class TransactionService {
+
+	private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
+
+	private final TransactionRepository transactionRepository;
+	private final SectorTagger sectorTagger;
+
+	public TransactionService(TransactionRepository transactionRepository, SectorTagger sectorTagger) {
+		this.transactionRepository = transactionRepository;
+		this.sectorTagger = sectorTagger;
+	}
+
+	/**
+	 * Save a new transaction with AI sector tagging.
+	 */
+	@Transactional
+	public Transaction saveTrade(PriceRequest request) {
+		String sector = sectorTagger.tagSector(request.getTicker());
+
+		Transaction transaction = Transaction.builder().ticker(request.getTicker().toUpperCase().trim())
+				.quantity(request.getQuantity()).price(request.getPrice()).type(request.getType())
+				.timestamp(request.getTimestamp() != null ? request.getTimestamp() : LocalDateTime.now()).sector(sector)
+				.build();
+
+		Transaction saved = transactionRepository.save(transaction);
+		log.info("Saved {} transaction for {} - qty: {}, price: {}, sector: {}", saved.getType(), saved.getTicker(),
+				saved.getQuantity(), saved.getPrice(), saved.getSector());
+
+		return saved;
+	}
+
+	@Transactional(readOnly = true)
+	public List<Transaction> getAllTransactions() {
+		return transactionRepository.findAll();
+	}
+
+	@Transactional(readOnly = true)
+	public List<Transaction> getTransactionsByTicker(String ticker) {
+		return transactionRepository.findByTickerOrderByTimestampAsc(ticker.toUpperCase().trim());
+	}
+}
+</file>
+
+<file path="pulse-ledger/src/main/resources/application.yml">
+# Ledger module default configuration
+# These can be overridden by the gateway module
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+</file>
+
+<file path="pulse-ledger/src/test/java/com/portfoliopulse/ledger/service/PerformanceServiceTest.java">
+package com.portfoliopulse.ledger.service;
+
+import com.portfoliopulse.common.TransactionType;
+import com.portfoliopulse.common.dto.PortfolioSummary;
+import com.portfoliopulse.ledger.entity.Transaction;
+import com.portfoliopulse.ledger.repository.TransactionRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+/**
+ * Unit tests for PerformanceService Weighted Average Cost Basis calculations.
+ */
+@ExtendWith(MockitoExtension.class)
+class PerformanceServiceTest {
+
+	@Mock
+	private TransactionRepository transactionRepository;
+
+	@InjectMocks
+	private PerformanceService performanceService;
+
+	private static final String TICKER = "AAPL";
+	private LocalDateTime baseTime;
+
+	@BeforeEach
+	void setUp() {
+		baseTime = LocalDateTime.of(2026, 1, 10, 10, 0);
+	}
+
+	@Test
+	@DisplayName("Scenario 1: Single BUY - should set cost basis equal to purchase price")
+	void singleBuy_shouldSetCostBasisEqualToPurchasePrice() {
+		List<Transaction> transactions = List
+				.of(createTransaction(TransactionType.BUY, new BigDecimal("10"), new BigDecimal("100.00"), 0));
+		when(transactionRepository.findByTickerOrderByTimestampAsc(TICKER)).thenReturn(transactions);
+
+		PortfolioSummary summary = performanceService.calculateWeightedAverage(TICKER);
+
+		assertThat(summary.ticker()).isEqualTo(TICKER);
+		assertThat(summary.totalQuantity()).isEqualByComparingTo(new BigDecimal("10"));
+		assertThat(summary.averageCostBasis()).isEqualByComparingTo(new BigDecimal("100.0000"));
+		assertThat(summary.totalCost()).isEqualByComparingTo(new BigDecimal("1000.0000"));
+	}
+
+	@Test
+	@DisplayName("Scenario 2: Multiple BUYs at different prices - should calculate weighted average")
+	void multipleBuys_shouldCalculateWeightedAverage() {
+		List<Transaction> transactions = Arrays.asList(
+				createTransaction(TransactionType.BUY, new BigDecimal("10"), new BigDecimal("100.00"), 0),
+				createTransaction(TransactionType.BUY, new BigDecimal("5"), new BigDecimal("110.00"), 1));
+		when(transactionRepository.findByTickerOrderByTimestampAsc(TICKER)).thenReturn(transactions);
+
+		PortfolioSummary summary = performanceService.calculateWeightedAverage(TICKER);
+
+		assertThat(summary.totalQuantity()).isEqualByComparingTo(new BigDecimal("15"));
+		assertThat(summary.totalCost()).isEqualByComparingTo(new BigDecimal("1550.0000"));
+		assertThat(summary.averageCostBasis()).isEqualByComparingTo(new BigDecimal("103.3333"));
+	}
+
+	@Test
+	@DisplayName("Scenario 3: BUY then SELL - should reduce quantity and maintain average cost")
+	void buyThenSell_shouldReduceQuantityAndMaintainAverageCost() {
+		List<Transaction> transactions = Arrays.asList(
+				createTransaction(TransactionType.BUY, new BigDecimal("10"), new BigDecimal("100.00"), 0),
+				createTransaction(TransactionType.SELL, new BigDecimal("4"), new BigDecimal("120.00"), 1));
+		when(transactionRepository.findByTickerOrderByTimestampAsc(TICKER)).thenReturn(transactions);
+
+		PortfolioSummary summary = performanceService.calculateWeightedAverage(TICKER);
+
+		assertThat(summary.totalQuantity()).isEqualByComparingTo(new BigDecimal("6"));
+		assertThat(summary.totalCost()).isEqualByComparingTo(new BigDecimal("600.0000"));
+		assertThat(summary.averageCostBasis()).isEqualByComparingTo(new BigDecimal("100.0000"));
+	}
+
+	@Test
+	@DisplayName("Scenario 4: Multiple BUYs and a partial SELL - should maintain weighted average after sell")
+	void multipleBuysAndPartialSell_shouldMaintainWeightedAverage() {
+		List<Transaction> transactions = Arrays.asList(
+				createTransaction(TransactionType.BUY, new BigDecimal("10"), new BigDecimal("100.00"), 0),
+				createTransaction(TransactionType.BUY, new BigDecimal("10"), new BigDecimal("120.00"), 1),
+				createTransaction(TransactionType.SELL, new BigDecimal("5"), new BigDecimal("130.00"), 2));
+		when(transactionRepository.findByTickerOrderByTimestampAsc(TICKER)).thenReturn(transactions);
+
+		PortfolioSummary summary = performanceService.calculateWeightedAverage(TICKER);
+
+		assertThat(summary.totalQuantity()).isEqualByComparingTo(new BigDecimal("15"));
+		assertThat(summary.totalCost()).isEqualByComparingTo(new BigDecimal("1650.0000"));
+		assertThat(summary.averageCostBasis()).isEqualByComparingTo(new BigDecimal("110.0000"));
+	}
+
+	@Test
+	@DisplayName("Scenario 5: Complex sequence - BUY, BUY, SELL, BUY, SELL")
+	void complexSequence_shouldCalculateCorrectly() {
+		List<Transaction> transactions = Arrays.asList(
+				createTransaction(TransactionType.BUY, new BigDecimal("100"), new BigDecimal("50.00"), 0),
+				createTransaction(TransactionType.BUY, new BigDecimal("50"), new BigDecimal("60.00"), 1),
+				createTransaction(TransactionType.SELL, new BigDecimal("75"), new BigDecimal("70.00"), 2),
+				createTransaction(TransactionType.BUY, new BigDecimal("25"), new BigDecimal("55.00"), 3),
+				createTransaction(TransactionType.SELL, new BigDecimal("50"), new BigDecimal("65.00"), 4));
+		when(transactionRepository.findByTickerOrderByTimestampAsc(TICKER)).thenReturn(transactions);
+
+		PortfolioSummary summary = performanceService.calculateWeightedAverage(TICKER);
+
+		assertThat(summary.totalQuantity()).isEqualByComparingTo(new BigDecimal("50"));
+		assertThat(summary.averageCostBasis()).isEqualByComparingTo(new BigDecimal("53.75"));
+	}
+
+	@Test
+	@DisplayName("Scenario 6: DIVIDEND should not affect cost basis")
+	void dividend_shouldNotAffectCostBasis() {
+		List<Transaction> transactions = Arrays.asList(
+				createTransaction(TransactionType.BUY, new BigDecimal("10"), new BigDecimal("100.00"), 0),
+				createTransaction(TransactionType.DIVIDEND, new BigDecimal("5.00"), new BigDecimal("0.50"), 1));
+		when(transactionRepository.findByTickerOrderByTimestampAsc(TICKER)).thenReturn(transactions);
+
+		PortfolioSummary summary = performanceService.calculateWeightedAverage(TICKER);
+
+		assertThat(summary.totalQuantity()).isEqualByComparingTo(new BigDecimal("10"));
+		assertThat(summary.totalCost()).isEqualByComparingTo(new BigDecimal("1000.0000"));
+		assertThat(summary.averageCostBasis()).isEqualByComparingTo(new BigDecimal("100.0000"));
+	}
+
+	@Test
+	@DisplayName("Scenario 7: Sell all shares - should result in zero quantity and zero cost")
+	void sellAll_shouldResultInZeroQuantityAndCost() {
+		List<Transaction> transactions = Arrays.asList(
+				createTransaction(TransactionType.BUY, new BigDecimal("10"), new BigDecimal("100.00"), 0),
+				createTransaction(TransactionType.SELL, new BigDecimal("10"), new BigDecimal("120.00"), 1));
+		when(transactionRepository.findByTickerOrderByTimestampAsc(TICKER)).thenReturn(transactions);
+
+		PortfolioSummary summary = performanceService.calculateWeightedAverage(TICKER);
+
+		assertThat(summary.totalQuantity()).isEqualByComparingTo(BigDecimal.ZERO);
+		assertThat(summary.totalCost()).isEqualByComparingTo(BigDecimal.ZERO);
+		assertThat(summary.averageCostBasis()).isEqualByComparingTo(BigDecimal.ZERO);
+	}
+
+	@Test
+    @DisplayName("Scenario 8: No transactions - should return zero values")
+    void noTransactions_shouldReturnZeroValues() {
+        when(transactionRepository.findByTickerOrderByTimestampAsc(TICKER)).thenReturn(Collections.emptyList());
+
+        PortfolioSummary summary = performanceService.calculateWeightedAverage(TICKER);
+
+        assertThat(summary.ticker()).isEqualTo(TICKER);
+        assertThat(summary.totalQuantity()).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(summary.totalCost()).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(summary.averageCostBasis()).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+	private Transaction createTransaction(TransactionType type, BigDecimal quantity, BigDecimal price,
+			int minutesOffset) {
+		return Transaction.builder().id((long) (minutesOffset + 1)).ticker(TICKER).type(type).quantity(quantity)
+				.price(price).timestamp(baseTime.plusMinutes(minutesOffset)).sector("Technology").build();
+	}
+}
+</file>
+
+<file path="pulse-ledger/pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.portfoliopulse</groupId>
+        <artifactId>portfoliopulse-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>pulse-ledger</artifactId>
+    <name>Pulse Ledger</name>
+    <description>Core domain entities, persistence, and business logic</description>
+
+    <dependencies>
+        <!-- Internal Module -->
+        <dependency>
+            <groupId>com.portfoliopulse</groupId>
+            <artifactId>pulse-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spring Data JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Jackson for JSON processing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- PostgreSQL -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+</file>
+
+<file path="scripts/backfill_client/backfill.py">
+import requests
+import time
+import argparse
+import sys
+from datetime import datetime
+
+# Configuration
+BASE_URL = "http://localhost:8081/api/v1/backfill"
+RATE_LIMIT_DELAY = 15  # Alpha Vantage Free Tier: 5 calls per minute => 12-15s delay
+
+def setup_args():
+    parser = argparse.ArgumentParser(description="Backfill stock data for a list of tickers.")
+    parser.add_argument('file', help="Path to the text file containing tickers (one per line)")
+    parser.add_argument('--mode', choices=['compact', 'full'], default='compact', 
+                        help="Backfill mode: 'compact' (default, 100 days) or 'full' (20+ years, requires premium key)")
+    return parser.parse_args()
+
+def process_sticker(ticker, mode):
+    url = f"{BASE_URL}/{ticker}"
+    if mode == 'full':
+        url = f"{BASE_URL}/full/{ticker}"
+    
+    try:
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] Triggering {mode} backfill for {ticker}...")
+        response = requests.post(url)
+        
+        if response.status_code == 200:
+            print(f"✅ Success: {response.text}")
+        else:
+            print(f"❌ Failed ({response.status_code}): {response.text}")
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Connection Error: {e}")
+
+def main():
+    args = setup_args()
+    
+    try:
+        with open(args.file, 'r') as f:
+            tickers = [line.strip().upper() for line in f if line.strip()]
+    except FileNotFoundError:
+        print(f"Error: File '{args.file}' not found.")
+        sys.exit(1)
+
+    if not tickers:
+        print("No tickers found in file.")
+        sys.exit(0)
+
+    print(f"Starting backfill for {len(tickers)} tickers in '{args.mode}' mode.")
+    print(f"Rate limit delay set to {RATE_LIMIT_DELAY} seconds between calls.")
+    print("-" * 50)
+
+    for i, ticker in enumerate(tickers):
+        process_sticker(ticker, args.mode)
+        
+        # Don't sleep after the last item
+        if i < len(tickers) - 1:
+            print(f"Sleeping for {RATE_LIMIT_DELAY}s to respect API rate limits...")
+            time.sleep(RATE_LIMIT_DELAY)
+
+    print("-" * 50)
+    print("All done!")
+
+if __name__ == "__main__":
+    main()
+</file>
+
+<file path="scripts/backfill_client/README.md">
+# Backfill Client
+
+This simple Python tool orchestrates the backfilling of stock data using the PortfolioPulse Heartbeat service. It includes built-in rate limiting to respect the AlphaVantage free tier limits.
+
+## Setup
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Usage
+
+1. Edit `tickers.txt` to include the list of stock symbols you want to backfill (one per line).
+
+2. Run the script:
+   ```bash
+   # Default mode (Compact - last 100 days)
+   python3 backfill.py tickers.txt
+
+   # Full historical mode (20+ years - REQUIRES PREMIUM API KEY)
+   python3 backfill.py tickers.txt --mode full
+   ```
+
+## Settings
+
+- **Rate Limiting**: The script defaults to a 15-second delay between calls to stay safely within the 5 requests/minute limit of the AlphaVantage free tier. You can modify `RATE_LIMIT_DELAY` in the script if needed.
+</file>
+
+<file path="scripts/backfill_client/requirements.txt">
+requests==2.31.0
+yfinance
+pandas
+</file>
+
+<file path="scripts/backfill_client/test_tickers.txt">
+AAPL
+</file>
+
+<file path="scripts/backfill_client/tickers.txt">
+AAPL
+MSFT
+GOOGL
+NVDA
+PLTR
+AVGO
+AMD
+COST
+VOO
+QQQ
+QQQM
+VUG
+VONG
+SPMO
+VGT
+GRNY
+RTGI
+CRWV
+SOUN
+</file>
+
+<file path="scripts/backfill_client/yfinance_ingest.py">
+import argparse
+import sys
+import time
+from datetime import datetime
+import json
+import requests
+import yfinance as yf
+import pandas as pd
+import numpy as np
+
+# Configuration
+BASE_URL = "http://localhost:8082/api/v1/backfill/ingest"
+
+def setup_args():
+    parser = argparse.ArgumentParser(description="Ingest full history stock data from Yahoo Finance.")
+    parser.add_argument('file', help="Path to the text file containing tickers (one per line)")
+    return parser.parse_args()
+
+def fetch_and_ingest(ticker):
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Fetching history for {ticker} from Yahoo Finance...")
+    try:
+        # Fetch max history
+        ticker_obj = yf.Ticker(ticker)
+        # period="max" fetches all available history
+        # auto_adjust=False ensures we get plain Open/Close and Adj Close separately if needed
+        # But yfinance history() default auto_adjust=True might return adjusted values as 'Close'.
+        # Let's use auto_adjust=False to get 'Adj Close' column explicitly if it exists, or handle accordingly.
+        # Actually default is auto_adjust=True which replaces Open/High/Low/Close with adjusted values.
+        # We probably want raw prices + adjusted close if possible, or just accept what it gives.
+        # Let's set auto_adjust=False to be explicit.
+        hist = ticker_obj.history(period="max", auto_adjust=False)
+        
+        if hist.empty:
+            print(f"⚠️ No data found for {ticker}")
+            return
+
+        print(f"   Found {len(hist)} records. Preparing payload...")
+
+        # Convert to list of dicts
+        # Expected DTO: date, open, high, low, close, adjustedClose, volume
+        
+        payload = []
+        for index, row in hist.iterrows():
+            # index is DatetimeIndex
+            date_str = index.strftime('%Y-%m-%d')
+            
+            # Handle NaNs (replace with None/null for JSON)
+            # Java BigDecimal can handle nulls, but we usually want values.
+            # If any main price is NaN, skip.
+            if pd.isna(row['Open']) or pd.isna(row['Close']):
+                continue
+                
+            item = {
+                "date": date_str,
+                "open": float(row['Open']),
+                "high": float(row['High']),
+                "low": float(row['Low']),
+                "close": float(row['Close']),
+                # 'Adj Close' might not exist in all versions/responses, check it
+                "adjustedClose": float(row['Adj Close']) if 'Adj Close' in row else float(row['Close']),
+                "volume": int(row['Volume']) if not pd.isna(row['Volume']) else 0
+            }
+            payload.append(item)
+
+        # Send in batches if payload is huge? Cassandra handles thousands per second, 
+        # but 20y daily data is ~5000 records. Valid size for one HTTP POST body (approx 1-2MB).
+        # We can send it all at once for now.
+        
+        url = f"{BASE_URL}/{ticker}"
+        headers = {'Content-Type': 'application/json'}
+        
+        print(f"   Sending {len(payload)} records to heartbeat service...")
+        response = requests.post(url, json=payload, headers=headers)
+        
+        if response.status_code == 200:
+            print(f"✅ Success: {response.text}")
+        else:
+            print(f"❌ Failed ({response.status_code}): {response.text}")
+
+    except Exception as e:
+        print(f"❌ Error processing {ticker}: {e}")
+
+def main():
+    args = setup_args()
+    
+    try:
+        with open(args.file, 'r') as f:
+            tickers = [line.strip().upper() for line in f if line.strip()]
+    except FileNotFoundError:
+        print(f"Error: File '{args.file}' not found.")
+        sys.exit(1)
+
+    if not tickers:
+        print("No tickers found in file.")
+        sys.exit(0)
+
+    print(f"Starting Yahoo Finance ingestion for {len(tickers)} tickers.")
+    print("-" * 50)
+
+    for i, ticker in enumerate(tickers):
+        fetch_and_ingest(ticker)
+        time.sleep(1) # Polite delay
+
+    print("-" * 50)
+    print("All done!")
+
+if __name__ == "__main__":
+    main()
+</file>
+
+<file path=".gitignore">
+# Compiled class files
+*.class
+target/
+
+# Log files
+*.log
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IDE specific files
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Local configuration files (contains secrets)
+**/application-local.yml
+**/application-local.properties
+.env
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+</file>
+
+<file path="docker-compose.yml">
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: portfoliopulse-postgres
+    environment:
+      POSTGRES_DB: portfoliopulse
+      POSTGRES_USER: pulse
+      POSTGRES_PASSWORD: pulse123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pulse -d portfoliopulse"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cassandra:
+    image: cassandra:4.1
+    container_name: portfoliopulse-cassandra
+    environment:
+      CASSANDRA_CLUSTER_NAME: PulseCluster
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_RACK: rack1
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe cluster'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  postgres_data:
+  cassandra_data:
+</file>
+
+<file path="pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.1</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.portfoliopulse</groupId>
+    <artifactId>portfoliopulse-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>PortfolioPulse Parent</name>
+    <description>A scalable, agent-ready financial system with clean separation of concerns</description>
+
+    <modules>
+        <module>pulse-common</module>
+        <module>pulse-ledger</module>
+        <module>pulse-gateway</module>
+        <module>pulse-heartbeat</module>
+        <module>pulse-intel</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <spring-ai.version>1.0.0-M5</spring-ai.version>
+        <cassandra-driver.version>4.18.1</cassandra-driver.version>
+        <spotless.version>2.45.0</spotless.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Boot Dependencies BOM -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>3.4.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <!-- Spring AI BOM -->
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Internal Modules -->
+            <dependency>
+                <groupId>com.portfoliopulse</groupId>
+                <artifactId>pulse-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.portfoliopulse</groupId>
+                <artifactId>pulse-ledger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.portfoliopulse</groupId>
+                <artifactId>pulse-heartbeat</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Cassandra Driver -->
+            <dependency>
+                <groupId>com.datastax.oss</groupId>
+                <artifactId>java-driver-core</artifactId>
+                <version>${cassandra-driver.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <eclipse>
+                            <version>4.26.0</version>
+                        </eclipse>
+                        <trimTrailingWhitespace/>
+                        <endWithNewline/>
+                    </java>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+</file>
+
+<file path="README.md">
+# PortfolioPulse
+
+A scalable, agent-ready financial system with clean separation of concerns built using Spring Boot 3.4.1 and Java 21.
+
+## Architecture
+
+```
+PortfolioPulse/
+├── pulse-common/        # Shared DTOs and enums
+├── pulse-ledger/        # Domain, persistence, business logic
+├── pulse-gateway/       # REST API entry point
+├── pulse-heartbeat/     # Market data ingestion (Cassandra)
+├── docker-compose.yml   # PostgreSQL + Cassandra
+└── pom.xml              # Parent POM
+```
+
+### Module Overview
+
+| Module | Purpose |
+|--------|---------|
+| **pulse-common** | `TransactionType` enum, `PriceRequest` and `PortfolioSummary` DTOs |
+| **pulse-ledger** | `Portfolio` and `Transaction` entities, `PerformanceService`, `SectorTagger` (Spring AI) |
+| **pulse-gateway** | REST controllers: `/api/v1/trades` and `/api/v1/summary/{ticker}` |
+| **pulse-heartbeat** | `DailyPrice` Cassandra entity, `AlphaVantageService`, `HeartbeatScheduler` |
+
+## Prerequisites
+
+- Java 21
+- Maven 3.9+
+- Docker & Docker Compose
+
+## Quick Start
+
+### 1. Start Infrastructure
+
+```bash
+docker-compose up -d
+```
+
+### 2. Build the Project
+
+```bash
+mvn clean install
+```
+
+### 3. Run the Application
+
+```bash
+cd pulse-gateway
+mvn spring-boot:run
+```
+
+The API will be available at `http://localhost:8080`.
+
+## API Endpoints
+
+### Record a Trade
+
+```bash
+curl -X POST http://localhost:8080/api/v1/trades \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ticker": "AAPL",
+    "type": "BUY",
+    "quantity": 10,
+    "price": 150.00,
+    "timestamp": "2026-01-10T12:00:00"
+  }'
+```
+
+### Get Portfolio Summary
+
+```bash
+curl http://localhost:8080/api/v1/summary/AAPL
+```
+
+Response:
+```json
+{
+  "ticker": "AAPL",
+  "totalQuantity": 10.0000,
+  "averageCostBasis": 150.0000,
+  "totalCost": 1500.0000,
+  "sector": "Technology"
+}
+```
+
+## Weighted Average Cost Basis
+
+| Transaction | Effect |
+|-------------|--------|
+| **BUY** | `newAvg = (currentCost + buyAmount) / (currentQty + buyQty)` |
+| **SELL** | Reduces quantity; maintains average cost |
+| **DIVIDEND** | No effect on cost basis |
+
+## pulse-heartbeat: Market Data Ingestion
+
+### DailyPrice Entity (Cassandra)
+
+Composite partition key design for efficient time-series queries:
+
+| Column | Key Type | Purpose |
+|--------|----------|---------|
+| `ticker` | Partition | Stock symbol |
+| `price_year` | Partition | Year bucketing for distribution |
+| `trade_date` | Clustering (DESC) | Time-series ordering |
+
+### AlphaVantage Integration
+
+Fetches daily adjusted prices via WebClient. Configure API key:
+
+```bash
+export ALPHAVANTAGE_API_KEY=your-api-key
+```
+
+### HeartbeatScheduler
+
+Runs daily at 6 PM on weekdays to fetch latest prices for all tickers in the ledger.
+
+```yaml
+heartbeat:
+  scheduler:
+    cron: "0 0 18 * * MON-FRI"
+```
+
+## AI Sector Tagging
+
+**Spring AI + Google Gemini** classifies tickers into sectors:
+- Technology, Healthcare, Finance, Energy, Consumer, Industrial, Materials, Utilities, Real Estate, Communication
+
+```bash
+export GOOGLE_CLOUD_PROJECT=your-project-id
+export GOOGLE_CLOUD_LOCATION=us-central1
+```
+
+## Configuration
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `server.port` | 8080 | HTTP port |
+| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/portfoliopulse` | PostgreSQL |
+| `spring.data.cassandra.contact-points` | localhost | Cassandra host |
+| `alphavantage.api-key` | demo | AlphaVantage API key |
+
+## License
+
+MIT
+</file>
+
+</files>
