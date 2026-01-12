@@ -18,15 +18,15 @@ Built with Spring Boot 3.4.1, Java 21, React 19, and Gemini 2.0 Flash AI.
 
 ### Dashboard Overview
 **Real-time monitoring of portfolio health, price trends, and live holdings.**
-![Dashboard Overview](file:///Users/skasireddy3/.gemini/antigravity/brain/642fa14c-ce5e-4be3-a2ac-2b1116988689/dashboard_overview_1768188617780.png)
+![Dashboard Overview](docs/images/dashboard_overview.png)
 
 ### Master Strategist
 **AI-driven analysis identifying hidden correlations and thematic exposure.**
-![Master Strategist](file:///Users/skasireddy3/.gemini/antigravity/brain/642fa14c-ce5e-4be3-a2ac-2b1116988689/master_strategist_1768188627473.png)
+![Master Strategist](docs/images/master_strategist.png)
 
 ### Premium Trading Terminal
 **Glassmorphism-styled trade entry with smart pre-filled data.**
-![Trade Modal](file:///Users/skasireddy3/.gemini/antigravity/brain/642fa14c-ce5e-4be3-a2ac-2b1116988689/trade_modal_1768188637745.png)
+![Trade Modal](docs/images/trade_modal.png)
 
 ## Architecture
 
