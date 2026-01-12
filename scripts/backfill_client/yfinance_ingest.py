@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 
 # Configuration
-BASE_URL = "http://localhost:8082/api/v1/backfill/ingest"
+BASE_URL = "http://localhost:8080/api/v1/backfill/ingest"
 
 def setup_args():
     parser = argparse.ArgumentParser(description="Ingest full history stock data from Yahoo Finance.")

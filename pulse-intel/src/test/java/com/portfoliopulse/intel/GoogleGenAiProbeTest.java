@@ -19,9 +19,6 @@ public class GoogleGenAiProbeTest {
 	public void testGeminiConnectivityRest() throws Exception {
 		// Retrieve API Key
 		String apiKey = System.getenv("GEMINI_API_KEY");
-		if (apiKey == null || apiKey.isEmpty()) {
-			apiKey = "AIzaSyDhVRG5Jd2JVpQCry4xjM04LpjXsYZgd5E";
-		}
 
 		System.out.println("Testing Gemini Connectivity (REST) with API Key: " + apiKey.substring(0, 5) + "...");
 

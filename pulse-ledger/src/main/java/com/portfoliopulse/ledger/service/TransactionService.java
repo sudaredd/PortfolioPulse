@@ -48,7 +48,7 @@ public class TransactionService {
 
 	@Transactional(readOnly = true)
 	public List<Transaction> getAllTransactions() {
-		return transactionRepository.findAll();
+		return transactionRepository.findAllByOrderByTimestampDesc();
 	}
 
 	@Transactional(readOnly = true)

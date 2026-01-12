@@ -17,6 +17,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
 	List<Transaction> findByTickerOrderByTimestampAsc(String ticker);
 
+	List<Transaction> findAllByOrderByTimestampDesc();
+
 	List<Transaction> findByPortfolioId(Long portfolioId);
 
 	@Query("SELECT t.sector FROM Transaction t WHERE t.ticker = :ticker AND t.sector IS NOT NULL ORDER BY t.timestamp DESC LIMIT 1")

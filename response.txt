@@ -1,0 +1,22 @@
+* Host localhost:8080 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8080...
+* Connected to localhost (::1) port 8080
+> GET /api/v1/analysis/portfolio HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/8.7.1
+> Accept: */*
+> 
+* Request completely sent off
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0< HTTP/1.1 200 
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Date: Mon, 12 Jan 2026 02:37:06 GMT
+< 
+{ [1379 bytes data]
+100  1372    0  1372    0     0    457      0 --:--:--  0:00:02 --:--:--   457100  1372    0  1372    0     0    457      0 --:--:--  0:00:02 --:--:--   457
+* Connection #0 to host localhost left intact
+{"diversificationScore":25,"overallSummary":"The portfolio is highly concentrated in a few mega-cap technology stocks, making it vulnerable to sector-specific downturns and macroeconomic shifts. Diversification is extremely poor, requiring immediate attention to mitigate risk.","thematicExposure":{"FAANG":100.0,"Big Tech":100.0},"hiddenCorrelations":["AAPL-MSFT: Both highly sensitive to consumer spending and regulatory scrutiny.","GOOG-AAPL: Competition in mobile operating systems and app store ecosystems can create correlated price movements."],"exposureAlerts":["Extreme concentration risk due to over 80% allocation to AAPL.","High sensitivity to interest rate hikes due to valuation reliance on future growth.","Regulatory risk: all three companies face ongoing antitrust scrutiny."],"strategicMoves":["Reduce AAPL allocation to 50% by selling 31.3% of holdings.","Add a position in a low-correlation asset such as a commodities ETF (e.g., DBC) with a 10% allocation.","Initiate a short position in QQQ ETF as a hedge against tech sector decline, allocating 5% of portfolio value.","Increase diversification by adding positions in Healthcare (e.g., UNH) and Consumer Staples (e.g., PG), allocating 10% and 15% respectively.","Evaluate and add small positions (2-3% each) in specific themes such as Cybersecurity (e.g., CRWD) and Renewable Energy (e.g., ICLN)."]}

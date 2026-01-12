@@ -4,6 +4,7 @@ import { TrendingUp, TrendingDown, AlertTriangle, Plus } from 'lucide-react'
 import WealthChart from '../components/WealthChart'
 import GeminiInsights from '../components/GeminiInsights'
 import MasterStrategistCard from '../components/MasterStrategistCard'
+import HoldingsTable from '../components/HoldingsTable'
 import TradeForm from '../components/TradeForm'
 import { analysisApi } from '../api/client'
 
@@ -85,18 +86,23 @@ export default function Dashboard() {
 
             {/* Chart Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="card">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-bold text-white">30-Day Price Trend</h2>
-                        <input
-                            type="text"
-                            value={selectedTicker}
-                            onChange={(e) => setSelectedTicker(e.target.value.toUpperCase())}
-                            className="input-field w-24 text-center"
-                            placeholder="TICKER"
-                        />
+                <div className="space-y-6">
+                    <div className="card">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-bold text-white">30-Day Price Trend</h2>
+                            <input
+                                type="text"
+                                value={selectedTicker}
+                                onChange={(e) => setSelectedTicker(e.target.value.toUpperCase())}
+                                className="input-field w-24 text-center"
+                                placeholder="TICKER"
+                            />
+                        </div>
+                        <WealthChart ticker={selectedTicker} />
                     </div>
-                    <WealthChart ticker={selectedTicker} />
+
+                    {/* Live Holdings Table */}
+                    <HoldingsTable onSelectTicker={setSelectedTicker} />
                 </div>
 
                 <GeminiInsights

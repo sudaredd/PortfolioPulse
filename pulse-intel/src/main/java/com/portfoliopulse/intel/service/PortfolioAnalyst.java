@@ -38,7 +38,8 @@ public class PortfolioAnalyst {
 	private final ObjectMapper objectMapper;
 
 	public PortfolioAnalyst(PerformanceService performanceService, DailyPriceRepository dailyPriceRepository,
-			HttpClient httpClient, ObjectMapper objectMapper, @Value("${ai.google.genai.api-key:}") String apiKey) {
+			HttpClient httpClient, ObjectMapper objectMapper,
+			@Value("${spring.ai.google.genai.api-key:}") String apiKey) {
 		this.performanceService = performanceService;
 		this.dailyPriceRepository = dailyPriceRepository;
 		this.httpClient = httpClient;
@@ -319,6 +320,7 @@ public class PortfolioAnalyst {
 				.map(p -> String.format("%s: Close=%.2f, Vol=%d", p.getTradeDate(), p.getClosePrice(), p.getVolume()))
 				.collect(Collectors.joining("\n"));
 	}
+
 	/**
 	 * Analyzes the entire portfolio using Master Strategist approach.
 	 *
@@ -484,9 +486,13 @@ public class PortfolioAnalyst {
 	private com.portfoliopulse.intel.model.MasterStrategistReport callGeminiForPortfolio(String promptText) {
 		try {
 			if (apiKey == null || apiKey.isEmpty()) {
+				log.error("API Key is missing/empty!");
 				return new com.portfoliopulse.intel.model.MasterStrategistReport(0, "API Key Missing",
 						java.util.Map.of(), List.of("Security Risk"), List.of("Configure GEMINI_API_KEY"), List.of());
 			}
+
+			log.info("DEBUG ME: Authenticating with Gemini API Key: {}...",
+					apiKey.length() > 10 ? apiKey.substring(0, 10) : apiKey);
 
 			String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
 					+ apiKey;

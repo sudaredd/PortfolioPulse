@@ -5,8 +5,7 @@ spring:
   application:
     name: pulse-gateway
   config:
-    import: optional:classpath:application-local.yml
-  
+    import: optional:classpath:application-local.yml,optional:file:${user.home}/secrets/app.properties
   datasource:
     url: jdbc:postgresql://localhost:5432/portfoliopulse
     username: pulse
@@ -33,7 +32,7 @@ spring:
   ai:
     google:
       genai:
-        api-key: ${GEMINI_API_KEY}
+        api-key: ${spring.ai.google.genai.api-key}
         chat:
           options:
             model: gemini-1.5-flash

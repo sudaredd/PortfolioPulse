@@ -23,6 +23,11 @@ export const analysisApi = {
         api.get('/analysis/portfolio').then(res => res.data),
 };
 
+export const summaryApi = {
+    getPortfolioSummary: () =>
+        api.get('/summary').then(res => res.data),
+};
+
 export const tradeApi = {
     createTrade: (trade) =>
         api.post('/trades', trade).then(res => res.data),
