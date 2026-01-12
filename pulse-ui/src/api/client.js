@@ -18,6 +18,9 @@ export const chartApi = {
 export const analysisApi = {
     getAnalysis: (ticker) =>
         api.get(`/analysis/${ticker}`).then(res => res.data),
+
+    getPortfolioAnalysis: () =>
+        api.get('/analysis/portfolio').then(res => res.data),
 };
 
 export const tradeApi = {

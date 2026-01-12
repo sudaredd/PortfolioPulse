@@ -2,7 +2,12 @@
 
 ## [Unreleased] - 2026-01-11
 
-### Added - Chart Enhancements & Multi-Timeframe AI Analysis
+### Added - Master Strategist Portfolio RAG & Analysis
+
+#### Master Strategist Feature
+- ✨ **Master Strategist Portfolio RAG**: Implemented a global portfolio-wide analysis feature using a compressed performance matrix to stay within token limits.
+- ✨ **Enhanced Context (5Y/10Y)**: Added 5-year and 10-year returns + Alpha (Relative Strength vs. VOO) to the AI analyze logic.
+- ✨ **Master Strategist Card**: New dashboard component for visualizing diversification scores, thematic exposures, and strategic moves.
 
 #### Frontend (pulse-ui)
 
@@ -101,6 +106,11 @@ List<DailyPrice> historyYTD = fetchHistory(ticker, ytdDays);
 
 **Backend:**
 - `pulse-intel/src/main/java/com/portfoliopulse/intel/service/PortfolioAnalyst.java`
+- `pulse-intel/src/main/java/com/portfoliopulse/intel/controller/AnalysisController.java`
+- `pulse-intel/src/main/java/com/portfoliopulse/intel/model/MasterStrategistReport.java`
+- `pulse-ui/src/components/MasterStrategistCard.jsx`
+- `pulse-ui/src/pages/Dashboard.jsx`
+- `pulse-ui/src/api/client.js`
 
 ---
 

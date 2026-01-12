@@ -1,6 +1,7 @@
 package com.portfoliopulse.intel.controller;
 
 import com.portfoliopulse.intel.model.AnalysisReport;
+import com.portfoliopulse.intel.model.MasterStrategistReport;
 import com.portfoliopulse.intel.service.PortfolioAnalyst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,5 +22,10 @@ public class AnalysisController {
 	@GetMapping("/{ticker}")
 	public ResponseEntity<AnalysisReport> analyzeTicker(@PathVariable String ticker) {
 		return ResponseEntity.ok(portfolioAnalyst.analyzePortfolio(ticker));
+	}
+
+	@GetMapping("/portfolio")
+	public ResponseEntity<MasterStrategistReport> analyzePortfolio() {
+		return ResponseEntity.ok(portfolioAnalyst.analyzeAggregatePortfolio());
 	}
 }

@@ -7,8 +7,9 @@ Built with Spring Boot 3.4.1, Java 21, React 19, and Gemini 2.0 Flash AI.
 ## Features
 
 - 📊 **Interactive Price Charts** - Google Finance-style interface with 7 time ranges (1W, 1M, 3M, YTD, 1Y, 5Y, 10Y)
-- 🤖 **AI-Powered Analysis** - Multi-timeframe portfolio insights using Gemini 2.0 Flash
-- 📈 **Benchmark Comparison** - Relative strength vs S&P 500 (VOO) across all timeframes
+- 🤖 **AI-Powered Analysis** - Multi-timeframe portfolio insights and global "Master Strategist" RAG analysis using Gemini 2.0 Flash
+- 📈 **Benchmark Comparison** - Relative strength vs S&P 500 (VOO) across all timeframes (30d - 10Y)
+- 🧠 **Master Strategist** - Global portfolio analysis identifying thematic clusters (e.g., AI infra) and hidden correlations
 - 💼 **Portfolio Management** - Track trades, calculate weighted average cost basis
 - 🎯 **Smart Sector Tagging** - Automatic classification using Spring AI
 - ⚡ **Real-time Updates** - Auto-refresh AI insights every 30 minutes
@@ -162,6 +163,11 @@ Response:
 **Get Multi-Timeframe Analysis:**
 ```bash
 curl http://localhost:8080/api/v1/analysis/AAPL
+
+**Portfolio-Wide Strategy:**
+```bash
+curl http://localhost:8080/api/v1/analysis/portfolio
+```
 ```
 
 Response:
@@ -197,6 +203,12 @@ Response:
 - Context-aware risk flags
 - Timeframe-informed rebalancing suggestions
 - Manual refresh button + auto-refresh every 30 minutes
+
+**Master Strategist (Portfolio RAG):**
+- Global portfolio assessment identifying hidden correlations (e.g., AAPL-TSLA dependencies)
+- Thematic exposure tracking (e.g., "AI infrastructure", "EV ecosystem")
+- Diversification score (0-100) and actionable strategic moves
+- Multi-timeframe performance matrix (30d, 1y, 5y, 10y)
 
 **Trading:**
 - Sliding trade form for BUY/SELL transactions

@@ -56,7 +56,10 @@ class PortfolioAnalystTest {
 
 		DailyPrice price = DailyPrice.builder().ticker(ticker).closePrice(BigDecimal.valueOf(180))
 				.tradeDate(LocalDate.now()).volume(1000000L).build();
-		when(dailyPriceRepository.findRecentPrices(eq(ticker), anyInt(), eq(30))).thenReturn(List.of(price));
+
+		// Updated repository calls (now called multiple times for different timeframes)
+		when(dailyPriceRepository.findByTickerAndTradeDateBetween(eq(ticker), anyList(), any(LocalDate.class),
+				any(LocalDate.class))).thenReturn(List.of(price));
 
 		// Mock HTTP Response
 		String jsonResponse = """
@@ -72,8 +75,10 @@ class PortfolioAnalystTest {
 				""";
 		when(httpResponse.statusCode()).thenReturn(200);
 		when(httpResponse.body()).thenReturn(jsonResponse);
-		when(httpClient.send(any(java.net.http.HttpRequest.class), any(java.net.http.HttpResponse.BodyHandler.class)))
-				.thenReturn(httpResponse);
+
+		// Use doReturn to avoid unchecked conversion issues with generics in mocks
+		doReturn(httpResponse).when(httpClient).send(any(java.net.http.HttpRequest.class),
+				any(java.net.http.HttpResponse.BodyHandler.class));
 
 		// Act
 		AnalysisReport report = portfolioAnalyst.analyzePortfolio(ticker);
@@ -83,6 +88,5 @@ class PortfolioAnalystTest {
 		assertEquals(85, report.healthScore());
 		assertEquals("Good", report.summary());
 		verify(performanceService).calculateWeightedAverage(ticker);
-		verify(dailyPriceRepository).findRecentPrices(eq(ticker), anyInt(), eq(30));
 	}
 }

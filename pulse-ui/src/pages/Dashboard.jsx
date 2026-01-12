@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { TrendingUp, TrendingDown, AlertTriangle, Plus } from 'lucide-react'
 import WealthChart from '../components/WealthChart'
 import GeminiInsights from '../components/GeminiInsights'
+import MasterStrategistCard from '../components/MasterStrategistCard'
 import TradeForm from '../components/TradeForm'
 import { analysisApi } from '../api/client'
 
@@ -14,12 +15,25 @@ export default function Dashboard() {
         queryKey: ['analysis', selectedTicker],
         queryFn: () => analysisApi.getAnalysis(selectedTicker),
         enabled: !!selectedTicker,
-        staleTime: 30 * 60 * 1000, // Consider data stale after 30 minutes
-        cacheTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+        staleTime: 30 * 60 * 1000,
+        cacheTime: 60 * 60 * 1000,
+    })
+
+    const { data: portfolioAnalysis, isLoading: isLoadingPortfolio } = useQuery({
+        queryKey: ['portfolio-analysis'],
+        queryFn: () => analysisApi.getPortfolioAnalysis(),
+        staleTime: 60 * 60 * 1000, // Stale after 1 hour
+        cacheTime: 2 * 60 * 60 * 1000, // Keep in cache for 2 hours
     })
 
     return (
         <div className="space-y-6">
+            {/* Master Strategist - Full Width */}
+            <MasterStrategistCard
+                report={portfolioAnalysis}
+                isLoading={isLoadingPortfolio}
+            />
+
             {/* Top Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="card">
