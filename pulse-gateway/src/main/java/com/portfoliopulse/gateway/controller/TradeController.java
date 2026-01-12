@@ -53,6 +53,22 @@ public class TradeController {
 		return ResponseEntity.ok(responses);
 	}
 
+	@PutMapping("/{id}")
+	public ResponseEntity<TransactionResponse> updateTrade(@PathVariable Long id,
+			@Valid @RequestBody PriceRequest request) {
+		log.info("Received update request for id {}: {} {} @ {}", id, request.getType(), request.getTicker(),
+				request.getPrice());
+		Transaction updated = transactionService.updateTrade(id, request);
+		return ResponseEntity.ok(mapToResponse(updated));
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteTrade(@PathVariable Long id) {
+		log.info("Received delete request for id {}", id);
+		transactionService.deleteTrade(id);
+		return ResponseEntity.noContent().build();
+	}
+
 	private TransactionResponse mapToResponse(Transaction tx) {
 		return TransactionResponse.builder().id(tx.getId()).ticker(tx.getTicker()).type(tx.getType())
 				.quantity(tx.getQuantity()).price(tx.getPrice()).timestamp(tx.getTimestamp()).sector(tx.getSector())

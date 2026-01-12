@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { summaryApi, chartApi } from '../api/client';
-import { TrendingUp, TrendingDown, DollarSign, PieChart, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Plus, Minus } from 'lucide-react';
 
 /**
  * HoldingsTable Component
@@ -12,7 +12,7 @@ import { TrendingUp, TrendingDown, DollarSign, PieChart, ArrowUpRight, ArrowDown
  * - Enriches data by fetching real-time prices for each ticker
  * - Calculates Market Value and Unrealized P&L on the fly
  */
-export default function HoldingsTable({ onSelectTicker }) {
+export default function HoldingsTable({ onSelectTicker, onTrade }) {
     const [enrichedHoldings, setEnrichedHoldings] = useState([]);
 
     // 1. Fetch base summary data
@@ -97,6 +97,7 @@ export default function HoldingsTable({ onSelectTicker }) {
                             <th className="pb-3 text-right">CURRENT</th>
                             <th className="pb-3 text-right">VALUE</th>
                             <th className="pb-3 text-right pr-2">UNREALIZED P&L</th>
+                            <th className="pb-3 text-right pr-2">ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody className="font-mono text-sm">
@@ -133,11 +134,29 @@ export default function HoldingsTable({ onSelectTicker }) {
                                         {holding.pnlPercentage >= 0 ? '+' : ''}{holding.pnlPercentage.toFixed(2)}%
                                     </div>
                                 </td>
+                                <td className="py-3 text-right pr-2" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            onClick={() => onTrade && onTrade(holding.ticker, 'BUY')}
+                                            className="p-1 text-terminal-success hover:bg-terminal-success/20 rounded transition-colors"
+                                            title="Buy More"
+                                        >
+                                            <Plus size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => onTrade && onTrade(holding.ticker, 'SELL')}
+                                            className="p-1 text-terminal-danger hover:bg-terminal-danger/20 rounded transition-colors"
+                                            title="Sell"
+                                        >
+                                            <Minus size={16} />
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                         ))}
                         {enrichedHoldings.length === 0 && (
                             <tr>
-                                <td colSpan={6} className="py-8 text-center text-gray-500 italic">
+                                <td colSpan={7} className="py-8 text-center text-gray-500 italic">
                                     No holdings found. Start trading to build your portfolio.
                                 </td>
                             </tr>

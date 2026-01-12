@@ -55,4 +55,40 @@ public class TransactionService {
 	public List<Transaction> getTransactionsByTicker(String ticker) {
 		return transactionRepository.findByTickerOrderByTimestampAsc(ticker.toUpperCase().trim());
 	}
+
+	@Transactional
+	public Transaction updateTrade(Long id, PriceRequest request) {
+		Transaction existing = transactionRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Transaction not found with id: " + id));
+
+		String ticker = request.getTicker().toUpperCase().trim();
+		boolean tickerChanged = !ticker.equals(existing.getTicker());
+
+		existing.setTicker(ticker);
+		existing.setQuantity(request.getQuantity());
+		existing.setPrice(request.getPrice());
+		existing.setType(request.getType());
+		if (request.getTimestamp() != null) {
+			existing.setTimestamp(request.getTimestamp());
+		}
+
+		if (tickerChanged) {
+			String sector = sectorTagger.tagSector(ticker);
+			existing.setSector(sector);
+		}
+
+		Transaction updated = transactionRepository.save(existing);
+		log.info("Updated transaction {} for {} - qty: {}, price: {}", updated.getId(), updated.getTicker(),
+				updated.getQuantity(), updated.getPrice());
+		return updated;
+	}
+
+	@Transactional
+	public void deleteTrade(Long id) {
+		if (!transactionRepository.existsById(id)) {
+			throw new IllegalArgumentException("Transaction not found with id: " + id);
+		}
+		transactionRepository.deleteById(id);
+		log.info("Deleted transaction with id: {}", id);
+	}
 }

@@ -11,6 +11,12 @@ import { analysisApi } from '../api/client'
 export default function Dashboard() {
     const [selectedTicker, setSelectedTicker] = useState('AAPL')
     const [showTradeForm, setShowTradeForm] = useState(false)
+    const [tradeInitialData, setTradeInitialData] = useState(null)
+
+    const handleTrade = (ticker, type) => {
+        setTradeInitialData({ ticker, type, quantity: '', price: '' })
+        setShowTradeForm(true)
+    }
 
     const { data: analysis, isLoading, refetch } = useQuery({
         queryKey: ['analysis', selectedTicker],
@@ -102,7 +108,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Live Holdings Table */}
-                    <HoldingsTable onSelectTicker={setSelectedTicker} />
+                    <HoldingsTable onSelectTicker={setSelectedTicker} onTrade={handleTrade} />
                 </div>
 
                 <GeminiInsights
@@ -113,10 +119,12 @@ export default function Dashboard() {
                 />
             </div>
 
+
+
             {/* Trade Button */}
             <button
-                onClick={() => setShowTradeForm(true)}
-                className="fixed bottom-8 right-8 btn-success shadow-2xl flex items-center space-x-2 px-6 py-3 text-lg"
+                onClick={() => { setTradeInitialData(null); setShowTradeForm(true); }}
+                className="fixed bottom-8 right-8 btn-success shadow-2xl flex items-center space-x-2 px-6 py-3 text-lg z-50"
             >
                 <Plus className="w-5 h-5" />
                 <span>New Trade</span>
@@ -126,7 +134,7 @@ export default function Dashboard() {
             <TradeForm
                 isOpen={showTradeForm}
                 onClose={() => setShowTradeForm(false)}
-                defaultTicker={selectedTicker}
+                initialData={tradeInitialData}
             />
         </div>
     )

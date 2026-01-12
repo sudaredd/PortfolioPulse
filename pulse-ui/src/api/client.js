@@ -32,6 +32,12 @@ export const tradeApi = {
     createTrade: (trade) =>
         api.post('/trades', trade).then(res => res.data),
 
+    updateTrade: (id, trade) =>
+        api.put(`/trades/${id}`, trade).then(res => res.data),
+
+    deleteTrade: (id) =>
+        api.delete(`/trades/${id}`).then(res => res.data),
+
     getTrades: () =>
         api.get('/trades').then(res => res.data),
 };
